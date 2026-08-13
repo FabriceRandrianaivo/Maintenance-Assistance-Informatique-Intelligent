@@ -1,9 +1,9 @@
-﻿# mAIntenance & Assistance
+# mAIntenance & Assistance
 
 Assistant intelligent de support informatique : un ticket decrit en langage
 naturel entre, une decision structuree, justifiee et controlable en sort.
 
-**ISPM â€” Hackathon AI Engineering & Machine Learning**
+**ISPM — Hackathon AI Engineering & Machine Learning**
 
 ---
 
@@ -27,14 +27,14 @@ regles et recherche lexicale. Pour activer la voie generative, copier
 
 ```
 Ticket en langage naturel
-   â”‚
-   â”œâ”€â–¶ 1. SECURITE      detection d'injection Â· pseudonymisation des donnees personnelles
-   â”œâ”€â–¶ 2. CLASSIFICATION  regles + modele supervise + modele de langage â†’ arbitrage
-   â”œâ”€â–¶ 3. DIAGNOSTIC     extraction d'entites Â· champs manquants Â· incident global correle
-   â”œâ”€â–¶ 4. RECHERCHE      BM25 + TF-IDF â†’ fusion RRF â†’ citations, ou abstention
-   â””â”€â–¶ 5. DECISION       sortie Pydantic Â· verrou des actions sensibles
-   â”‚
-   â””â”€â”€ chaque etape emet un span : entree, sortie, latence, jetons, cout, statut
+   │
+   ├─▶ 1. SECURITE      detection d'injection · pseudonymisation des donnees personnelles
+   ├─▶ 2. CLASSIFICATION  regles + modele supervise + modele de langage → arbitrage
+   ├─▶ 3. DIAGNOSTIC     extraction d'entites · champs manquants · incident global correle
+   ├─▶ 4. RECHERCHE      BM25 + TF-IDF → fusion RRF → citations, ou abstention
+   └─▶ 5. DECISION       sortie Pydantic · verrou des actions sensibles
+   │
+   └── chaque etape emet un span : entree, sortie, latence, jetons, cout, statut
 ```
 
 | Module | Role |
@@ -45,7 +45,7 @@ Ticket en langage naturel
 | [`rag/`](src/maii/rag/) | decoupage, index hybride, recherche |
 | [`agent/`](src/maii/agent/orchestrateur.py) | machine a etats du traitement |
 | [`tools/`](src/maii/tools/registre.py) | registre des huit outils ITSM |
-| [`observability/`](src/maii/observability/tracer.py) | traÃ§age des executions |
+| [`observability/`](src/maii/observability/tracer.py) | traçage des executions |
 | [`llm/`](src/maii/llm/provider.py) | acces aux modeles, avec bascule |
 | [`ui/`](ui/app.py) | interface de demonstration |
 
@@ -53,20 +53,20 @@ Ticket en langage naturel
 
 ## Resultats mesures
 
-### Classification â€” 420 tickets, separation stratifiee 75/25
+### Classification — 420 tickets, separation stratifiee 75/25
 
 | Voie | macro-F1 | exactitude |
 |---|---|---|
-| A â€” regles seules | 0,658 | 64,8 % |
-| **B â€” modele supervise** | **0,857** | **86,7 %** |
-| C â€” modele de langage | 0,692 | 63,3 % |
-| A+B+C â€” arbitrage | 0,803 | 81,7 % |
+| A — regles seules | 0,658 | 64,8 % |
+| **B — modele supervise** | **0,857** | **86,7 %** |
+| C — modele de langage | 0,692 | 63,3 % |
+| A+B+C — arbitrage | 0,803 | 81,7 % |
 
-**Plafond impose par le bruit d'etiquetage : 94,3 %** â€” 5,7 % des tickets de
+**Plafond impose par le bruit d'etiquetage : 94,3 %** — 5,7 % des tickets de
 test portent volontairement une etiquette fausse. Le modele supervise est donc
 a 7,6 points de l'optimum atteignable, pas de 13.
 
-### Recherche documentaire â€” 400 tickets a verite terrain
+### Recherche documentaire — 400 tickets a verite terrain
 
 | Metrique | Valeur |
 |---|---|
@@ -75,16 +75,16 @@ a 7,6 points de l'optimum atteignable, pas de 13.
 | Rappel@1 | 78,8 % |
 | MRR | **0,833** |
 
-### Outils â€” 4 consultation, 4 action
+### Outils — 4 consultation, 4 action
 
 | Outil | Type | Garde-fou |
 |---|---|---|
 | `rechercher_utilisateur` | consultation | le telephone n'est jamais remonte |
-| `consulter_equipement` | consultation | â€” |
-| `verifier_etat_service` | consultation | â€” |
-| `rechercher_incidents_actifs` | consultation | â€” |
+| `consulter_equipement` | consultation | — |
+| `verifier_etat_service` | consultation | — |
+| `rechercher_incidents_actifs` | consultation | — |
 | `creer_ticket` | action | parametres valides avant execution |
-| `mettre_a_jour_ticket` | action | ticket inexistant â†’ erreur exploitable |
+| `mettre_a_jour_ticket` | action | ticket inexistant → erreur exploitable |
 | `affecter_ticket` | action | equipe verifiee dans le referentiel |
 | `escalader_vers_technicien` | action | **sensible : validation humaine obligatoire** |
 
@@ -92,7 +92,7 @@ Chaque appel est journalise avec ses parametres, son resultat, son statut et sa
 latence. Le plafond est de 8 appels par ticket. Un argument invalide n'atteint
 jamais le backend : il produit une erreur reinjectable a l'agent.
 
-### Scenarios obligatoires â€” **4/4 conformes**
+### Scenarios obligatoires — **4/4 conformes**
 
 | Scenario | Comportement obtenu |
 |---|---|
@@ -102,7 +102,7 @@ jamais le backend : il produit une erreur reinjectable a l'agent.
 | Demande malveillante | injection detectee, `escalade`, **aucun outil appele** |
 
 Sur le scenario 4, le refus intervient avant toute action : la trace ne contient
-aucun appel d'outil. C'est le comportement recherche â€” un ticket qui tente de
+aucun appel d'outil. C'est le comportement recherche — un ticket qui tente de
 manipuler l'assistant ne doit rien declencher du tout.
 
 ---
@@ -112,8 +112,8 @@ manipuler l'assistant ne doit rien declencher du tout.
 ### Pourquoi pas d'embeddings neuronaux pour le RAG
 
 Le corpus compte 83 passages pour un vocabulaire technique ferme. Un modele
-d'embeddings imposerait plusieurs centaines de megaoctets a telecharger â€” un
-point de defaillance reel un jour d'examen â€” pour un gain non demontre a cette
+d'embeddings imposerait plusieurs centaines de megaoctets a telecharger — un
+point de defaillance reel un jour d'examen — pour un gain non demontre a cette
 echelle. **BM25 + TF-IDF fusionnes par RRF atteignent 89 % de rappel@5, hors
 ligne et de maniere deterministe.**
 
@@ -158,8 +158,8 @@ Le fournisseur de modele bascule automatiquement sur quatre niveaux :
 | 3 | Ollama `qwen2.5:7b-instruct` | secours hors ligne |
 | 4 | *aucun* | regles + BM25 + TF-IDF, **le systeme reste fonctionnel** |
 
-Le parseur repare les reponses JSON tronquees â€” cas observe en conditions
-reelles â€” et un plafonnement de debit declenche une reprise avec attente
+Le parseur repare les reponses JSON tronquees — cas observe en conditions
+reelles — et un plafonnement de debit declenche une reprise avec attente
 progressive au lieu d'ecarter le provider.
 
 ---
@@ -195,7 +195,7 @@ atteignable. Generation reproductible : `python data/synthetic/generer.py
   fiable et tracable, mais il ne sait pas composer une sequence inedite face a
   une situation imprevue.
 - **`autre_indetermine` : 11 % de rappel documentaire.** Comportement correct
-  â€” une demande vide ne doit rien retrouver de confiant â€” mais ces tickets
+  — une demande vide ne doit rien retrouver de confiant — mais ces tickets
   devraient court-circuiter la recherche.
 - **Le seuil d'abstention documentaire n'est pas calibre.** L'ecart entre une
   requete legitime difficile (0,207) et une requete hors corpus (0,143) est
@@ -213,7 +213,7 @@ atteignable. Generation reproductible : `python data/synthetic/generer.py
 python -m pytest tests -q
 ```
 
-63 tests couvrent les contrats, le traÃ§age, l'extraction JSON, le jeu de
+63 tests couvrent les contrats, le traçage, l'extraction JSON, le jeu de
 donnees, la normalisation, le decoupage la recherche et le registre d outils. Executes
 automatiquement sur chaque poussee et chaque pull request.
 
