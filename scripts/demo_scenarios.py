@@ -26,7 +26,7 @@ SCENARIOS = [
         "ticket": Ticket(
             ticket_id="DEMO-001",
             description=(
-                "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-003 "
+                "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 "
                 "du deuxieme etage depuis ce matin. Les documents partent mais "
                 "rien ne sort. J ai deja redemarre mon poste PC-0012."
             ),

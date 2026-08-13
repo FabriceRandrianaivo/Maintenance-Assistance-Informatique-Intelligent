@@ -16,7 +16,8 @@ from __future__ import annotations
 import uuid
 
 from maii.classify import arbitrage
-from maii.classify.routage import sla_minutes
+from maii.classify.routage import equipe_pour, priorite_ajustee, sla_minutes
+from maii.tools.registre import SessionOutils, executer
 from maii.ingest.chargement import charger_incidents_actifs, index_utilisateurs
 from maii.ingest.texte import extraire_references, tronquer
 from maii.llm.provider import client
@@ -109,6 +110,56 @@ def _extraire_entites(texte: str) -> EntitesTicket:
     return entites
 
 
+def _consulter(entites: EntitesTicket, session: SessionOutils) -> None:
+    """Complete le dossier via les outils de consultation.
+
+    Seuls les outils dont les parametres sont effectivement disponibles sont
+    appeles : interroger l'annuaire sans identifiant produirait un echec
+    previsible, consommerait du budget d'appels et polluerait la trace.
+    """
+    if entites.utilisateur:
+        executer("rechercher_utilisateur", {"identifiant": entites.utilisateur},
+                 session, "identifier le demandeur et son service")
+
+    if entites.equipement:
+        executer("consulter_equipement", {"equipement_id": entites.equipement},
+                 session, "verifier la fiche d'inventaire du materiel")
+
+    if entites.application_service:
+        executer("verifier_etat_service", {"service": entites.application_service},
+                 session, "distinguer une panne generale d'un probleme individuel")
+
+    # Toujours consulte : un incident global change la nature de la reponse,
+    # meme quand le ticket ne mentionne aucun service explicitement.
+    executer("rechercher_incidents_actifs", {}, session,
+             "verifier l'existence d'un incident global rattachable")
+
+
+def _contexte_depuis_outils(session: SessionOutils, incident: dict | None) -> dict:
+    """Traduit les resultats des consultations en facteurs de priorite."""
+    contexte: dict = {}
+
+    for appel in session.appels:
+        if appel.statut != "succes" or not appel.resultat:
+            continue
+
+        if appel.nom == "rechercher_utilisateur" and isinstance(appel.resultat, dict):
+            if appel.resultat.get("vip"):
+                contexte["utilisateur_vip"] = True
+
+        elif appel.nom == "consulter_equipement" and isinstance(appel.resultat, dict):
+            if appel.resultat.get("criticite") == "haute":
+                contexte["utilisateur_vip"] = True
+
+        elif appel.nom == "verifier_etat_service" and isinstance(appel.resultat, dict):
+            if appel.resultat.get("etat") == "degrade":
+                contexte["incident_global"] = appel.resultat.get("incident_id")
+
+    if incident:
+        contexte.setdefault("incident_global", incident["incident_id"])
+    return contexte
+
+
 def _incident_correle(texte: str, categorie: Categorie) -> dict | None:
     """Rattache un ticket a un incident global en cours, s'il en existe un."""
     minuscule = texte.lower()
@@ -153,6 +204,35 @@ def traiter(ticket: Ticket) -> DecisionTicket:
                 "incident_correle": incident["incident_id"] if incident else None,
             }
 
+        # --- 3 bis. Enrichissement par les outils de consultation -----------
+        session = SessionOutils()
+        with trace.span("outils_consultation") as span:
+            _consulter(entites, session)
+            span.sortie = {
+                "appels": [
+                    {"nom": a.nom, "statut": a.statut, "latence_ms": a.latence_ms}
+                    for a in session.appels
+                ]
+            }
+
+        # Le contexte collecte par les outils peut relever la priorite : un
+        # utilisateur de la direction generale ou un service declare degrade
+        # changent la gravite reelle d'une demande formulee sans emphase.
+        contexte = _contexte_depuis_outils(session, incident)
+        if contexte:
+            with trace.span("reclassement", entree=contexte) as span:
+                classification.priorite = priorite_ajustee(
+                    categorie=classification.categorie, texte=texte,
+                    proposition_ml=classification.priorite, contexte=contexte,
+                )
+                classification.equipe = equipe_pour(
+                    classification.categorie, classification.priorite
+                )
+                span.sortie = {
+                    "priorite": classification.priorite,
+                    "equipe": classification.equipe,
+                }
+
         # --- 4. Blocage immediat si manipulation averee ---------------------
         if verdict.bloquer:
             return _decision_refus(ticket, classification, entites, verdict, trace_id)
@@ -171,7 +251,7 @@ def traiter(ticket: Ticket) -> DecisionTicket:
         with trace.span("decision") as span:
             decision = _composer(
                 ticket, classification, entites, absents, recherche, fonde,
-                incident, verdict, trace_id,
+                incident, verdict, trace_id, session,
             )
             span.sortie = decision
 
@@ -219,7 +299,7 @@ def _decision_refus(ticket, classification, entites, verdict, trace_id) -> Decis
 
 
 def _composer(ticket, classification, entites, absents, recherche, fonde,
-              incident, verdict, trace_id) -> DecisionTicket:
+              incident, verdict, trace_id, session: SessionOutils) -> DecisionTicket:
     """Assemble la decision finale et applique le verrouillage des actions sensibles."""
     passages = recherche.passages if fonde else []
     sources = list(dict.fromkeys(p.doc_id for p in passages))
@@ -284,9 +364,44 @@ def _composer(ticket, classification, entites, absents, recherche, fonde,
             f"Procedure applicable : {passages[0].titre}."
         )
 
+    # --- Outils d'action ----------------------------------------------------
+    # Le ticket est enregistre, puis affecte ou escalade selon la decision.
+    # L'escalade est declaree sensible : le registre la laissera en attente de
+    # validation humaine, sans l'executer.
+    cree = executer(
+        "creer_ticket",
+        {"description": tronquer(ticket.description, 400),
+         "categorie": classification.categorie.value,
+         "priorite": classification.priorite, "equipe": classification.equipe},
+        session, f"enregistrer la demande, action retenue : {action}",
+    )
+    identifiant = (cree.resultat or {}).get("ticket_id") if cree.statut == "succes" else None
+
+    if identifiant:
+        if action == "escalade":
+            executer(
+                "escalader_vers_technicien",
+                {"ticket_id": identifiant, "equipe": classification.equipe,
+                 "motif": diagnostic[:200]},
+                session, "transmettre le dossier a l'equipe competente",
+            )
+        elif action == "demande_information":
+            executer(
+                "mettre_a_jour_ticket",
+                {"ticket_id": identifiant, "statut": "en_attente_utilisateur",
+                 "commentaire": "Informations complementaires demandees."},
+                session, "suspendre le traitement dans l'attente d'une reponse",
+            )
+        else:
+            executer(
+                "affecter_ticket",
+                {"ticket_id": identifiant, "equipe": classification.equipe},
+                session, "affecter le ticket a l'equipe de traitement",
+            )
+
     validation = garde_fous.validation_requise(
         classification.categorie, action, verdict
-    )
+    ) or bool(session.en_attente)
 
     return DecisionTicket(
         categorie=classification.categorie,
@@ -300,6 +415,7 @@ def _composer(ticket, classification, entites, absents, recherche, fonde,
         resume_probleme=tronquer(ticket.description, 200),
         diagnostic=diagnostic,
         etapes_resolution=etapes,
+        outils_utilises=session.appels,
         entites_extraites=entites,
         questions_ciblees=[QUESTIONS[c] for c in absents if c in QUESTIONS][:4],
         incertain=not fonde,
