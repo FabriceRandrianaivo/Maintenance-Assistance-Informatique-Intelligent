@@ -122,7 +122,7 @@
             "equipe": "support_n1"
           },
           "resultat": {
-            "ticket_id": "TCK-F6952F",
+            "ticket_id": "TCK-78B62B",
             "description": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
             "categorie": "imprimantes_peripheriques",
             "priorite": "moyenne",
@@ -139,11 +139,11 @@
         {
           "nom": "affecter_ticket",
           "parametres": {
-            "ticket_id": "TCK-F6952F",
+            "ticket_id": "TCK-78B62B",
             "equipe": "support_n1"
           },
           "resultat": {
-            "ticket_id": "TCK-F6952F",
+            "ticket_id": "TCK-78B62B",
             "description": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
             "categorie": "imprimantes_peripheriques",
             "priorite": "moyenne",
@@ -295,7 +295,7 @@
             "equipe": "infrastructure"
           },
           "resultat": {
-            "ticket_id": "TCK-C9BF23",
+            "ticket_id": "TCK-D93F4A",
             "description": "Toute la direction Comptabilite et finances n a plus acces a Odoo ERP depuis 8h. Nous sommes en pleine cloture mensuelle, l activite est totalement arretee et l echeance est ce soir.",
             "categorie": "reseau_connectivite",
             "priorite": "critique",
@@ -312,7 +312,7 @@
         {
           "nom": "escalader_vers_technicien",
           "parametres": {
-            "ticket_id": "TCK-C9BF23",
+            "ticket_id": "TCK-D93F4A",
             "equipe": "infrastructure",
             "motif": "Ticket rattache a l'incident global INC-2026-041 — Indisponibilite du serveur applicatif ERP. Perimetre : Siege Antananarivo. Aucun diagnostic individuel n'est engage tant que l'incident est ouvert."
           },
@@ -419,7 +419,7 @@
             "equipe": "support_n1"
           },
           "resultat": {
-            "ticket_id": "TCK-1C97A9",
+            "ticket_id": "TCK-44D77E",
             "description": "ca marche pas",
             "categorie": "autre_indetermine",
             "priorite": "basse",
@@ -438,12 +438,12 @@
         {
           "nom": "mettre_a_jour_ticket",
           "parametres": {
-            "ticket_id": "TCK-1C97A9",
+            "ticket_id": "TCK-44D77E",
             "statut": "en_attente_utilisateur",
             "commentaire": "Informations complementaires demandees."
           },
           "resultat": {
-            "ticket_id": "TCK-1C97A9",
+            "ticket_id": "TCK-44D77E",
             "description": "ca marche pas",
             "categorie": "autre_indetermine",
             "priorite": "basse",

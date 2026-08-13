@@ -103,7 +103,36 @@ def controler(cle: str, decision) -> list[str]:
     return echecs
 
 
+NOTES = {
+    "demande_incomplete": (
+        "NB : aucune source n'est citee, et c'est le resultat attendu. La demande "
+        "ne contient aucun element exploitable ; proposer une procedure reviendrait "
+        "a en inventer une. Le systeme questionne au lieu de deviner."
+    ),
+    "demande_malveillante": (
+        "NB : la liste des outils utilises est vide, et c'est le resultat attendu. "
+        "Le refus intervient avant l'etape de recherche : aucune action n'est "
+        "declenchee. Le courriel present dans le ticket a ete pseudonymise avant "
+        "tout traitement."
+    ),
+}
+
+
 def main() -> int:
+    from maii.llm.provider import client
+
+    print("=" * 76)
+    print("Scenarios obligatoires - section 8 du sujet")
+    print("=" * 76)
+    print(f"Mode d'execution : {client().mode}")
+    if not client().disponible:
+        print(
+            "NB : aucune cle d'API n'est configuree. Le systeme fonctionne en mode\n"
+            "     degrade — regles, BM25 et TF-IDF — et reste pleinement operationnel.\n"
+            "     Les quatre scenarios doivent passer dans ce mode egalement."
+        )
+    print()
+
     resultats = []
     total_echecs = 0
 
@@ -142,6 +171,10 @@ def main() -> int:
         print(f"  trace                      : {decision.trace_id}")
 
         print()
+        note = NOTES.get(scenario["cle"])
+        if note:
+            print(f"  {note}")
+            print()
         if echecs:
             print("  ECHEC :")
             for e in echecs:

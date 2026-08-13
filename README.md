@@ -7,6 +7,46 @@ naturel entre, une decision structuree, justifiee et controlable en sort.
 
 ---
 
+## NB — à lire avant la correction
+
+Quatre points ne sont pas devinables à la lecture du code seul, et conditionnent
+la bonne interprétation de ce dépôt.
+
+> **NB 1 — Le prototype se lance sans aucune clé d'API.**
+> Le dépôt ne contient volontairement aucune clé. Lancé tel quel, le système
+> bascule sur son mode dégradé — règles, BM25 et TF-IDF — et **reste
+> entièrement fonctionnel** : les quatre scénarios obligatoires passent, la
+> recherche documentaire cite ses sources, les garde-fous s'appliquent. Aucune
+> configuration préalable n'est nécessaire pour corriger. `.\run.ps1` suffit.
+
+> **NB 2 — Les données de la section 7 n'ont pas été fournies avec le sujet.**
+> La section 7 annonce un historique de tickets, une base de connaissances, un
+> inventaire, une liste de services et une liste d'incidents, mais aucun de ces
+> fichiers n'accompagnait l'énoncé et aucun lien n'y figure. Le corpus a donc
+> été **reconstitué intégralement**, avec les défauts que cette même section
+> annonce, injectés à taux connus et documentés
+> ([`data/raw/METADONNEES.md`](data/raw/METADONNEES.md)). Les chiffres de ce
+> README portent sur ce corpus, dont la génération est reproductible à
+> l'identique.
+
+> **NB 3 — Les résultats sont à lire face au plafond, pas face à 100 %.**
+> 5,7 % des tickets du jeu de test portent **volontairement** une étiquette
+> fausse, conformément à la section 7. L'exactitude maximale atteignable est
+> donc de 94,3 %, et non de 100 %. Le modèle atteint 86,7 % : il est à 7,6
+> points de l'optimum, pas à 13. Le champ `categorie_vraie_sans_bruit` conserve
+> l'étiquette avant corruption ; il n'est jamais utilisé à l'apprentissage.
+
+> **NB 4 — Deux comportements qui ressemblent à des échecs sont voulus.**
+> Sur le scénario 4, la trace ne contient **aucun appel d'outil** : le refus
+> intervient avant toute action. Sur les tickets vagues, la catégorie
+> `autre_indetermine` obtient 11 % de rappel documentaire : une demande sans
+> contenu ne doit rien retrouver de confiant, et part en demande
+> d'information. Ces deux points sont détaillés plus bas.
+
+Le rapport technique se trouve dans [`docs/RAPPORT.md`](docs/RAPPORT.md).
+
+---
+
 ## Lancer le prototype
 
 ```powershell
