@@ -190,6 +190,18 @@ class ResultatVoie(BaseModel):
     disponible: bool = True
     motif_indisponibilite: str | None = None
 
+    # Section 5.4 : le prompt et la reponse brute du modele generatif doivent
+    # etre consultables. Portes par le resultat de la voie, ils remontent
+    # automatiquement dans le span de classification.
+    prompt_systeme: str | None = None
+    prompt_utilisateur: str | None = None
+    reponse_brute: str | None = None
+    modele: str | None = None
+    latence_ms: int = 0
+    tokens_entree: int = 0
+    tokens_sortie: int = 0
+    cout_usd: float = 0.0
+
 
 class ResultatClassification(BaseModel):
     """Decision de classification apres arbitrage des trois voies."""

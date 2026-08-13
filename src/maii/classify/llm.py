@@ -146,22 +146,42 @@ def classer(texte: str) -> ResultatVoie:
         return ResultatVoie(voie="llm", disponible=False,
                             motif_indisponibilite="aucun provider disponible")
 
-    reponse = llm.generer(SYSTEME, _construire_demande(texte, selecteur().proches(texte)),
-                          json_attendu=True)
+    demande = _construire_demande(texte, selecteur().proches(texte))
+    reponse = llm.generer(SYSTEME, demande, json_attendu=True)
+
+    def tracee(**champs) -> ResultatVoie:
+        """Attache au resultat le prompt et la reponse brute (section 5.4).
+
+        Ils sont portes meme en cas d'echec : c'est precisement quand une
+        reponse n'est pas exploitable qu'on a besoin de la relire.
+        """
+        return ResultatVoie(
+            voie="llm",
+            prompt_systeme=SYSTEME,
+            prompt_utilisateur=demande,
+            reponse_brute=reponse.texte or None,
+            modele=f"{reponse.provider}:{reponse.modele}" if reponse.provider else None,
+            latence_ms=reponse.latence_ms,
+            tokens_entree=reponse.tokens_entree,
+            tokens_sortie=reponse.tokens_sortie,
+            cout_usd=reponse.cout_usd,
+            **champs,
+        )
+
     if not reponse.ok:
-        return ResultatVoie(voie="llm", disponible=False,
-                            motif_indisponibilite=reponse.erreur or "reponse vide")
+        return tracee(disponible=False,
+                      motif_indisponibilite=reponse.erreur or "reponse vide")
 
     charge = extraire_json(reponse.texte)
     if not charge:
-        return ResultatVoie(voie="llm", disponible=False,
-                            motif_indisponibilite="reponse non exploitable")
+        return tracee(disponible=False,
+                      motif_indisponibilite="reponse non exploitable")
 
     # Le modele peut inventer un libelle : on valide contre l'enumeration.
     brute = str(charge.get("categorie", "")).strip().lower().replace(" ", "_")
     if brute not in CATEGORIES:
-        return ResultatVoie(voie="llm", disponible=False,
-                            motif_indisponibilite=f"categorie hors schema : {brute!r}")
+        return tracee(disponible=False,
+                      motif_indisponibilite=f"categorie hors schema : {brute!r}")
 
     priorite = str(charge.get("priorite", "")).strip().lower()
     priorite = priorite if priorite in PRIORITES else None
@@ -172,8 +192,7 @@ def classer(texte: str) -> ResultatVoie:
         confiance = 0.6
     confiance = max(0.0, min(1.0, confiance))
 
-    return ResultatVoie(
-        voie="llm",
+    return tracee(
         categorie=Categorie(brute),
         # Le modele ne fournit pas de distribution : on en construit une en
         # concentrant sa confiance sur la classe choisie et en repartissant le
