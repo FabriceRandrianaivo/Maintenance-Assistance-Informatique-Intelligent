@@ -37,6 +37,20 @@ TARIFS = {
 
 DELAI_MAX_S = 25
 
+# Les offres gratuites plafonnent le nombre d'appels par minute. Une evaluation
+# en rafale atteint ce plafond en quelques secondes : on patiente et on reessaie
+# plutot que de conclure a une indisponibilite du provider.
+MAX_TENTATIVES = 4
+ATTENTE_INITIALE_S = 2.0
+
+_MOTIFS_PLAFONNEMENT = ("429", "rate limit", "quota", "too many requests",
+                        "resource_exhausted", "overloaded", "503")
+
+
+def _est_plafonnement(erreur: str | None) -> bool:
+    """Distingue un plafonnement temporaire d'une panne durable."""
+    return bool(erreur) and any(m in erreur.lower() for m in _MOTIFS_PLAFONNEMENT)
+
 
 @dataclass
 class ReponseLLM:
@@ -154,16 +168,35 @@ class LLMClient:
         for p in self.providers:
             if not p.disponible:
                 continue
-            debut = time.perf_counter()
-            try:
-                reponse = self._appeler(p, systeme, utilisateur, json_attendu, temperature)
-                reponse.latence_ms = int((time.perf_counter() - debut) * 1000)
-                if reponse.ok:
-                    return reponse
-                derniere_erreur = reponse.erreur or "reponse vide"
-            except Exception as exc:
-                derniere_erreur = f"{type(exc).__name__}: {exc}"
-            # Le provider vient d'echouer : on ne le retente pas sur ce ticket.
+
+            for tentative in range(MAX_TENTATIVES):
+                debut = time.perf_counter()
+                try:
+                    reponse = self._appeler(
+                        p, systeme, utilisateur, json_attendu, temperature
+                    )
+                    reponse.latence_ms = int((time.perf_counter() - debut) * 1000)
+                    if reponse.ok:
+                        return reponse
+                    derniere_erreur = reponse.erreur or "reponse vide"
+                except Exception as exc:
+                    derniere_erreur = f"{type(exc).__name__}: {exc}"
+
+                # Un plafonnement de debit n'est pas une panne : le provider
+                # reste valide, il faut simplement patienter. Sans ce
+                # traitement, une evaluation en rafale ecarte le provider des
+                # les premieres secondes et fausse toutes les mesures.
+                if _est_plafonnement(derniere_erreur) and tentative < MAX_TENTATIVES - 1:
+                    time.sleep(ATTENTE_INITIALE_S * (2 ** tentative))
+                    continue
+                break
+
+            if _est_plafonnement(derniere_erreur):
+                # Toutes les tentatives ont ete plafonnees : on passe au
+                # provider suivant sans condamner celui-ci pour la suite.
+                continue
+
+            # Echec de nature durable : ce provider est ecarte.
             p.disponible = False
             p.motif = derniere_erreur
 
