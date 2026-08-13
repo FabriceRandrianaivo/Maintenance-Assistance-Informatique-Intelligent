@@ -275,7 +275,7 @@ atteignable. Generation reproductible : `python data/synthetic/generer.py
 python -m pytest tests -q
 ```
 
-63 tests couvrent les contrats, le traçage, l'extraction JSON, le jeu de
+68 tests couvrent les contrats, le traçage, l'extraction JSON, le jeu de
 donnees, la normalisation, le decoupage la recherche et le registre d outils. Executes
 automatiquement sur chaque poussee et chaque pull request.
 
@@ -283,7 +283,8 @@ automatiquement sur chaque poussee et chaque pull request.
 
 ## Equipe
 
-| Membre | Perimetre |
-|---|---|
-| Fabrice Randrianaivo | architecture, recherche documentaire, decision, orchestrateur |
-| nyanjaraandria | interface de demonstration |
+| Membre | N° d'étudiant | Classe | Perimetre |
+|---|---|---|---|
+| RANDRIANARIVO Tolotra Lalaina Fabrice | 42 | IGGLIA 5 | architecture, recherche documentaire, decision |
+| ANDRIANARISOA Ny Anjara Jemima | 41 | IGGLIA 5 | orchestrateur, interface de demonstration |
+| ANDRIAMARONIRINA Harifitia Nicole | 6 | IGGLIA 5 | orchestrateur, interface de demonstration |

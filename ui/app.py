@@ -14,6 +14,7 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -71,7 +72,7 @@ _etat = _preparer()
 EXEMPLES = {
     "— saisie libre —": "",
     "1. Incident courant": (
-        "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-003 du deuxieme "
+        "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme "
         "etage depuis ce matin. Les documents partent mais rien ne sort. "
         "J ai deja redemarre mon poste PC-0012."
     ),
@@ -92,11 +93,47 @@ EXEMPLES = {
 COULEUR_PRIORITE = {
     "critique": "🔴", "haute": "🟠", "moyenne": "🟡", "basse": "🟢",
 }
-LIBELLE_ACTION = {
-    "resolution": "✅ Resolution proposee",
-    "demande_information": "❓ Informations complementaires demandees",
-    "escalade": "⬆️ Escalade vers un technicien",
+
+# Chaque decision finale a sa couleur et son intitule. Les teintes sont donnees
+# en RGB translucide afin de rester lisibles sur le theme clair comme sombre.
+ACTIONS = {
+    "resolution": ("✅", "Resolution proposee", "34, 160, 90"),
+    "demande_information": ("❓", "Informations complementaires demandees", "205, 145, 20"),
+    "escalade": ("⬆️", "Escalade vers un technicien", "70, 120, 220"),
 }
+
+STYLE = """
+<style>
+  .bandeau {
+      padding: 1.1rem 1.3rem; border-radius: 12px; margin-bottom: 1.2rem;
+      background: linear-gradient(100deg, rgba(70,120,220,.14), rgba(70,120,220,.03));
+      border: 1px solid rgba(128,128,128,.22);
+  }
+  .bandeau h1 { margin: 0; font-size: 1.55rem; letter-spacing: -.3px; }
+  .bandeau p  { margin: .35rem 0 0; opacity: .78; font-size: .93rem; }
+
+  .verdict {
+      padding: .85rem 1.1rem; border-radius: 10px; margin: .3rem 0 1.1rem;
+      font-weight: 600; font-size: 1.02rem;
+  }
+  .pastille {
+      display: inline-block; padding: .16rem .6rem; border-radius: 999px;
+      font-size: .78rem; font-weight: 600; margin-right: .35rem;
+      border: 1px solid rgba(128,128,128,.3);
+  }
+  .etape {
+      border-left: 3px solid rgba(70,120,220,.55); padding: .1rem 0 .1rem .8rem;
+      margin-bottom: .7rem;
+  }
+  .etape .src { font-size: .76rem; opacity: .6; }
+  div[data-testid="stMetricValue"] { font-size: 1.15rem; }
+</style>
+"""
+
+
+def _article(doc_id: str) -> dict | None:
+    """Retrouve un article de la base par son identifiant."""
+    return next((a for a in charger_articles() if a["doc_id"] == doc_id), None)
 
 
 # ---------------------------------------------------------------------------
@@ -126,6 +163,16 @@ with st.sidebar:
         "regles et la recherche lexicale."
     )
 
+
+st.markdown(STYLE, unsafe_allow_html=True)
+st.markdown(
+    '<div class="bandeau">'
+    "<h1>🛠 mAIntenance &amp; Assistance</h1>"
+    "<p>Du ticket en langage naturel a une decision structuree, justifiee et "
+    "controlable — comprendre, diagnostiquer, assister, resoudre.</p>"
+    "</div>",
+    unsafe_allow_html=True,
+)
 
 onglets = st.tabs(
     ["Traitement d'un ticket", "Observabilite", "Base de connaissances", "Evaluation"]
@@ -167,7 +214,14 @@ with onglets[0]:
         colonnes[2].metric("Equipe", decision.equipe)
         colonnes[3].metric("Confiance", f"{decision.confiance:.0%}")
 
-        st.info(LIBELLE_ACTION.get(decision.action, decision.action))
+        icone, libelle, teinte = ACTIONS.get(
+            decision.action, ("•", decision.action, "128, 128, 128")
+        )
+        st.markdown(
+            f'<div class="verdict" style="background: rgba({teinte}, .13); '
+            f'border-left: 4px solid rgb({teinte});">{icone} {libelle}</div>',
+            unsafe_allow_html=True,
+        )
 
         gauche, droite = st.columns([3, 2])
 
@@ -178,36 +232,94 @@ with onglets[0]:
             if decision.questions_ciblees:
                 st.subheader("Questions posees a l'utilisateur")
                 for q in decision.questions_ciblees:
-                    st.write(f"- {q}")
+                    st.markdown(f'<div class="etape">{q}</div>', unsafe_allow_html=True)
 
             if decision.etapes_resolution:
                 st.subheader("Etapes de resolution")
                 for e in decision.etapes_resolution:
-                    st.write(f"**{e.ordre}.** {e.instruction}")
-                    if e.source:
-                        st.caption(f"source : {e.source}")
+                    source = (
+                        f'<div class="src">source : {e.source}</div>' if e.source else ""
+                    )
+                    st.markdown(
+                        f'<div class="etape"><b>{e.ordre}.</b> {e.instruction}{source}</div>',
+                        unsafe_allow_html=True,
+                    )
+
+            # Section 3.4 : chaque appel d'outil doit etre consultable avec ses
+            # parametres, son resultat et son statut. Les afficher ici plutot
+            # que de les laisser dans la sortie brute rend le controle possible.
+            st.subheader("Outils appeles")
+            if decision.outils_utilises:
+                marqueur = {
+                    "succes": "✅", "erreur": "⚠️",
+                    "refuse": "⛔", "en_attente_validation": "⏸️",
+                }
+                for appel in decision.outils_utilises:
+                    entete = (
+                        f"{marqueur.get(appel.statut, '•')} `{appel.nom}` — "
+                        f"{appel.statut} — {appel.latence_ms} ms"
+                    )
+                    with st.expander(entete):
+                        if appel.justification:
+                            st.caption(appel.justification)
+                        st.write("**Parametres**")
+                        st.json(appel.parametres or {})
+                        if appel.erreur:
+                            st.warning(appel.erreur)
+                        if appel.resultat is not None:
+                            st.write("**Resultat**")
+                            st.json(appel.resultat)
+            else:
+                st.caption(
+                    "Aucun outil appele. Sur une demande malveillante, c'est le "
+                    "resultat attendu : le refus intervient avant toute action."
+                )
 
         with droite:
             st.subheader("Sources citees")
             if decision.sources:
                 for source in decision.sources:
-                    st.code(source, language=None)
+                    article = _article(source)
+                    titre = article["titre"] if article else source
+                    with st.expander(f"📄 `{source}` — {titre}"):
+                        if article:
+                            st.markdown(
+                                f'<span class="pastille">{article["categorie"]}</span>'
+                                f'<span class="pastille">{article["type"]}</span>',
+                                unsafe_allow_html=True,
+                            )
+                            st.markdown(article["contenu"])
+                        else:
+                            st.caption("Article introuvable dans la base.")
             else:
-                st.caption("Aucune source retenue.")
+                st.caption(
+                    "Aucune source retenue : le systeme s'abstient plutot que de "
+                    "proposer une procedure qu'il n'a pas trouvee."
+                )
 
             st.subheader("Informations extraites")
             entites = {
                 c: v for c, v in decision.entites_extraites.model_dump().items() if v
             }
-            st.json(entites or {"aucune": "information extraite"})
+            if entites:
+                for cle, valeur in entites.items():
+                    affichage = ", ".join(valeur) if isinstance(valeur, list) else valeur
+                    st.markdown(f"**{cle.replace('_', ' ')}** — {affichage}")
+            else:
+                st.caption("Aucune information exploitable dans le ticket.")
 
             if decision.informations_manquantes:
                 st.subheader("Informations manquantes")
-                for c in decision.informations_manquantes:
-                    st.write(f"- {c}")
+                st.markdown(
+                    " ".join(
+                        f'<span class="pastille">{c.replace("_", " ")}</span>'
+                        for c in decision.informations_manquantes
+                    ),
+                    unsafe_allow_html=True,
+                )
 
-        st.subheader("Sortie structuree")
-        st.json(decision.model_dump(mode="json"))
+        with st.expander("Sortie structuree — schema de la section 5.3"):
+            st.json(decision.model_dump(mode="json"))
 
 # --- Onglet 2 : observabilite ----------------------------------------------
 with onglets[1]:
@@ -222,13 +334,24 @@ with onglets[1]:
 
     if metriques["par_etape"]:
         st.subheader("Latence par etape")
-        st.dataframe(
-            [
-                {"etape": nom, "appels": v["appels"], "p50 (ms)": v["p50_ms"],
-                 "p95 (ms)": v["p95_ms"], "erreurs": v["erreurs"]}
-                for nom, v in metriques["par_etape"].items()
-            ],
-            use_container_width=True, hide_index=True,
+        lignes = [
+            {"etape": nom, "appels": v["appels"], "p50 (ms)": v["p50_ms"],
+             "p95 (ms)": v["p95_ms"], "erreurs": v["erreurs"]}
+            for nom, v in sorted(
+                metriques["par_etape"].items(), key=lambda x: -x[1]["p95_ms"]
+            )
+        ]
+        colonne_table, colonne_graphe = st.columns([3, 2])
+        colonne_table.dataframe(lignes, use_container_width=True, hide_index=True)
+        # Un tableau de correspondances ne suffit pas : le graphe exige des
+        # colonnes nommees, sans quoi le rendu echoue a l'execution.
+        colonne_graphe.bar_chart(
+            pd.DataFrame(
+                {"etape": [l["etape"] for l in lignes],
+                 "p95 (ms)": [l["p95 (ms)"] for l in lignes]}
+            ),
+            x="etape", y="p95 (ms)", horizontal=True,
+            height=max(180, 44 * len(lignes)),
         )
 
     decision = st.session_state.get("decision")
