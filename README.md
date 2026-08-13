@@ -5,6 +5,17 @@ naturel entre, une decision structuree, justifiee et controlable en sort.
 
 **ISPM — Hackathon AI Engineering & Machine Learning**
 
+## 🌐 Démonstration en ligne
+
+### **https://maintenance-assistance-informatique-intelligent.streamlit.app**
+
+Aucune installation nécessaire. Les quatre scénarios obligatoires sont
+pré-remplis dans le menu déroulant du premier onglet.
+
+> L'application se met en veille après plusieurs jours sans visite. Le premier
+> chargement peut alors demander une trentaine de secondes, le temps qu'elle se
+> réveille. Les chargements suivants sont immédiats.
+
 ---
 
 ## NB — à lire avant la correction
@@ -47,13 +58,24 @@ Le rapport technique se trouve dans [`docs/RAPPORT.md`](docs/RAPPORT.md).
 
 ---
 
-## Lancer le prototype
+## Lancer le prototype en local
 
 ```powershell
 .\run.ps1                 # installe, prepare les donnees, lance l'interface
 .\run.ps1 -Scenarios      # rejoue les quatre scenarios obligatoires
 .\run.ps1 -Evaluer        # entraine, indexe et publie les mesures
 ```
+
+```bash
+./run.sh                  # equivalent Linux / macOS
+./run.sh scenarios
+./run.sh evaluer
+./run.sh tests
+```
+
+Au premier lancement, l'index documentaire et le classifieur sont construits
+automatiquement à partir du corpus versionné — environ 3,5 secondes. Ce sont des
+artefacts dérivés, volontairement non suivis par Git.
 
 L'interface s'ouvre sur `http://localhost:8501`.
 
