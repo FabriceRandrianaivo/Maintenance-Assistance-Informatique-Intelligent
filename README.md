@@ -44,6 +44,7 @@ Ticket en langage naturel
 | [`classify/`](src/maii/classify/) | trois voies de classification et leur arbitrage |
 | [`rag/`](src/maii/rag/) | decoupage, index hybride, recherche |
 | [`agent/`](src/maii/agent/orchestrateur.py) | machine a etats du traitement |
+| [`tools/`](src/maii/tools/registre.py) | registre des huit outils ITSM |
 | [`observability/`](src/maii/observability/tracer.py) | traçage des executions |
 | [`llm/`](src/maii/llm/provider.py) | acces aux modeles, avec bascule |
 | [`ui/`](ui/app.py) | interface de demonstration |
@@ -74,14 +75,35 @@ a 7,6 points de l'optimum atteignable, pas de 13.
 | Rappel@1 | 78,8 % |
 | MRR | **0,833** |
 
+### Outils — 4 consultation, 4 action
+
+| Outil | Type | Garde-fou |
+|---|---|---|
+| `rechercher_utilisateur` | consultation | le telephone n'est jamais remonte |
+| `consulter_equipement` | consultation | — |
+| `verifier_etat_service` | consultation | — |
+| `rechercher_incidents_actifs` | consultation | — |
+| `creer_ticket` | action | parametres valides avant execution |
+| `mettre_a_jour_ticket` | action | ticket inexistant → erreur exploitable |
+| `affecter_ticket` | action | equipe verifiee dans le referentiel |
+| `escalader_vers_technicien` | action | **sensible : validation humaine obligatoire** |
+
+Chaque appel est journalise avec ses parametres, son resultat, son statut et sa
+latence. Le plafond est de 8 appels par ticket. Un argument invalide n'atteint
+jamais le backend : il produit une erreur reinjectable a l'agent.
+
 ### Scenarios obligatoires — **4/4 conformes**
 
 | Scenario | Comportement obtenu |
 |---|---|
-| Incident courant | procedure `KB-IMP-01` citee, 6 etapes, action `resolution` |
-| Incident urgent | priorite `critique`, action `escalade` |
-| Demande incomplete | action `demande_information`, 3 questions ciblees, aucune source inventee |
-| Demande malveillante | injection detectee, `escalade`, **validation humaine exigee** |
+| Incident courant | procedure `KB-IMP-01` citee, 6 etapes, `resolution`, ticket affecte |
+| Incident urgent | priorite `critique`, `escalade` retenue en attente de validation |
+| Demande incomplete | `demande_information`, 3 questions ciblees, aucune source inventee |
+| Demande malveillante | injection detectee, `escalade`, **aucun outil appele** |
+
+Sur le scenario 4, le refus intervient avant toute action : la trace ne contient
+aucun appel d'outil. C'est le comportement recherche — un ticket qui tente de
+manipuler l'assistant ne doit rien declencher du tout.
 
 ---
 
@@ -167,9 +189,11 @@ atteignable. Generation reproductible : `python data/synthetic/generer.py
 
 ## Limites connues
 
-- **Les huit outils ITSM ne sont pas implementes.** Le registre, la validation
-  des parametres et la file d'approbation etaient specifies ; le temps a
-  manque. La correlation avec les incidents actifs est en revanche operationnelle.
+- **La selection des outils est deterministe, pas raisonnee par un modele.**
+  L'agent appelle les outils de consultation dont les parametres sont
+  disponibles, puis l'outil d'action correspondant a sa decision. Ce choix est
+  fiable et tracable, mais il ne sait pas composer une sequence inedite face a
+  une situation imprevue.
 - **`autre_indetermine` : 11 % de rappel documentaire.** Comportement correct
   — une demande vide ne doit rien retrouver de confiant — mais ces tickets
   devraient court-circuiter la recherche.
@@ -189,8 +213,8 @@ atteignable. Generation reproductible : `python data/synthetic/generer.py
 python -m pytest tests -q
 ```
 
-51 tests couvrent les contrats, le traçage, l'extraction JSON, le jeu de
-donnees, la normalisation, le decoupage et la recherche. Executes
+63 tests couvrent les contrats, le traçage, l'extraction JSON, le jeu de
+donnees, la normalisation, le decoupage la recherche et le registre d outils. Executes
 automatiquement sur chaque poussee et chaque pull request.
 
 ---
