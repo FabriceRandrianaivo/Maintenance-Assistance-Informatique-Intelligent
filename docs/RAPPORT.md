@@ -247,9 +247,31 @@ contrôle vérifiés programmatiquement** (`scripts/demo_scenarios.py`). Le scri
 
 ### 4.4 Observabilité
 
-Un `trace_id` par ticket, un span par étape, portant entrée, sortie, latence,
-jetons, coût estimé, statut et erreur. Double sortie : `observability/traces.jsonl`
-et une table SQLite interrogée par l'onglet Observabilité de l'interface.
+Un `trace_id` par ticket, un span par étape. Double sortie :
+`observability/traces.jsonl`, livrable brut, et une table SQLite interrogée par
+l'onglet Observabilité de l'interface.
+
+Couverture point par point de ce qu'exige la section 5.4 du sujet :
+
+| Exigence de la section 5.4 | Où elle est satisfaite |
+|---|---|
+| entrées et sorties des principales composantes | chaque span porte son entrée et sa sortie sérialisées |
+| documents retrouvés | span `recherche` : références des passages et scores BM25, cosinus et RRF |
+| **prompts et réponses du modèle génératif** | le résultat de la voie générative porte `prompt_systeme`, `prompt_utilisateur` et `reponse_brute`, remontés dans le span `classification` |
+| appels d'outils | span `outils_consultation` et champ `outils_utilises` de la décision : paramètres, résultat, statut, latence |
+| latence | par span, agrégée en p50 et p95 par étape |
+| erreurs | statut et message par span ; le traçage n'avale jamais l'exception |
+| coût estimé | jetons entrants et sortants par appel, coût calculé par tarif du modèle |
+
+> **NB — Le prompt est conservé même quand l'appel échoue.** C'est précisément
+> lorsqu'une réponse est inexploitable qu'il faut pouvoir la relire. Le motif
+> d'indisponibilité accompagne alors la trace, ce qui a permis d'identifier que
+> les échecs observés pendant l'évaluation venaient d'un plafonnement de débit
+> et non d'un défaut du modèle.
+
+> **NB — Les données personnelles ne figurent pas dans les prompts tracés.**
+> La pseudonymisation intervient avant l'appel au modèle : la trace contient
+> les jetons de substitution, jamais les valeurs d'origine.
 
 ### 4.5 Tests
 
@@ -264,6 +286,33 @@ chaque *pull request*.
 > vérification manuelle — la page se chargeait, seul l'onglet concerné cassait.
 > Le harnais officiel de Streamlit exécute désormais l'application et soumet un
 > ticket réel à chaque exécution de la suite.
+
+---
+
+## 4.6 Interface de démonstration
+
+Quatre onglets, en Streamlit. L'interface appelle directement le pipeline, sans
+service HTTP intermédiaire : à l'échelle du prototype, cette couche aurait ajouté
+un point de panne sans rien apporter à la démonstration.
+
+| Onglet | Ce qu'il rend consultable |
+|---|---|
+| **Traitement d'un ticket** | les quatre scénarios obligatoires pré-remplis ; décision, diagnostic, étapes sourcées, appels d'outils, sortie structurée |
+| **Observabilité** | latence p50 et p95 par étape, jetons, taux d'erreur, trace complète du dernier ticket étape par étape |
+| **Base de connaissances** | recherche libre avec les scores BM25 et cosinus côte à côte, catalogue des articles |
+| **Évaluation** | résultats de la classification et conformité des scénarios |
+
+Trois choix d'affichage répondent directement à des exigences du sujet :
+
+- **Les appels d'outils sont dépliables** avec leurs paramètres, leur résultat,
+  leur statut et leur latence — section 3.4. Les laisser dans la sortie JSON
+  brute aurait rendu le contrôle impraticable.
+- **Les passages sources sont consultables**, pas seulement leurs identifiants —
+  section 3.3. Afficher `KB-IMP-01` seul ne permet pas de vérifier qu'une
+  réponse est réellement fondée sur la procédure citée.
+- **L'absence de résultat est expliquée plutôt que laissée vide** : sur une
+  demande malveillante, l'interface indique que l'absence d'appel d'outil est
+  le comportement attendu.
 
 ---
 
@@ -396,3 +445,13 @@ recours plutôt qu'un votant.
 
 C'est aussi ce que la note de cadrage du sujet suggérait — une approche simple,
 correctement justifiée et évaluée, plutôt qu'une approche complexe mal maîtrisée.
+
+---
+
+## Équipe
+
+| Membre | N° d'étudiant | Classe | Périmètre |
+|---|---|---|---|
+| RANDRIANARIVO Tolotra Lalaina Fabrice | 42 | IGGLIA 5 | architecture, recherche documentaire, décision |
+| ANDRIANARISOA Ny Anjara Jemima | 41 | IGGLIA 5 | orchestrateur, interface de démonstration |
+| ANDRIAMARONIRINA Harifitia Nicole | 6 | IGGLIA 5 | orchestrateur, interface de démonstration |
