@@ -23,7 +23,7 @@ import json
 import os
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 import requests
@@ -211,7 +211,15 @@ class LLMClient:
         )
 
     def _gemini(self, p, systeme, utilisateur, json_attendu, temperature) -> ReponseLLM:
-        generation: dict[str, Any] = {"temperature": temperature}
+        # Les modeles Gemini 3 raisonnent avant de repondre. Sur nos taches, ce
+        # raisonnement consomme l'essentiel du budget de sortie et tronque la
+        # reponse utile. On l'annule : les taches sont courtes et cadrees par un
+        # schema, et la latence est divisee par trois.
+        generation: dict[str, Any] = {
+            "temperature": temperature,
+            "thinkingConfig": {"thinkingBudget": 0},
+            "maxOutputTokens": 2048,
+        }
         if json_attendu:
             generation["responseMimeType"] = "application/json"
 
@@ -231,7 +239,15 @@ class LLMClient:
         candidats = d.get("candidates", [])
         if not candidats:
             return ReponseLLM("", "gemini", p.modele, erreur="aucun candidat retourne")
-        texte = "".join(part.get("text", "") for part in candidats[0]["content"]["parts"])
+        # Une reponse tronquee ou filtree ne comporte pas de partie textuelle.
+        parties = candidats[0].get("content", {}).get("parts", [])
+        if not parties:
+            motif = candidats[0].get("finishReason", "reponse sans contenu")
+            return ReponseLLM("", "gemini", p.modele, erreur=f"reponse vide ({motif})")
+        # Les parties de raisonnement sont ecartees : seul le texte final compte.
+        texte = "".join(
+            part.get("text", "") for part in parties if not part.get("thought")
+        )
         usage = d.get("usageMetadata", {})
         return ReponseLLM(
             texte=texte,
@@ -272,44 +288,100 @@ class LLMClient:
 # ----------------------------------------------------------------------
 
 
+def reparer_json_tronque(fragment: str) -> str:
+    """Referme un objet JSON interrompu en cours d'ecriture.
+
+    Un modele atteignant sa limite de sortie s'arrete au milieu de sa reponse.
+    Le fragment reste exploitable : les champs deja ecrits sont valides, seule
+    la fermeture manque. On ferme la chaine en cours si necessaire, on retire
+    une paire cle-valeur incomplete, puis on equilibre crochets et accolades.
+    """
+    texte = fragment.rstrip()
+
+    # Une chaine ouverte se detecte au nombre de guillemets non echappes.
+    guillemets = sum(
+        1 for i, c in enumerate(texte)
+        if c == '"' and (i == 0 or texte[i - 1] != "\\")
+    )
+    if guillemets % 2:
+        texte += '"'
+
+    # Une cle sans valeur, ou une virgule finale, empeche toute lecture.
+    texte = re.sub(r",\s*$", "", texte)
+    texte = re.sub(r',\s*"[^"]*"\s*:\s*$', "", texte)
+    texte = re.sub(r'\{\s*"[^"]*"\s*:\s*$', "{", texte)
+
+    fermetures = []
+    dans_chaine = False
+    for i, c in enumerate(texte):
+        if c == '"' and (i == 0 or texte[i - 1] != "\\"):
+            dans_chaine = not dans_chaine
+        elif not dans_chaine:
+            if c in "{[":
+                fermetures.append("}" if c == "{" else "]")
+            elif c in "}]" and fermetures:
+                fermetures.pop()
+
+    return texte + "".join(reversed(fermetures))
+
+
 def extraire_json(texte: str) -> dict[str, Any] | None:
     """Extrait un objet JSON d'une reponse de modele.
 
     Les modeles encadrent frequemment leur JSON de texte libre ou de blocs de
-    code. On tente le parsing direct, puis le bloc balise, puis le premier objet
-    equilibre trouve dans la chaine.
+    code, et le tronquent parfois. On tente successivement : le parsing direct,
+    le bloc balise, le premier objet equilibre de la chaine, puis la reparation
+    d'un objet inacheve. Un objet unique encapsule dans un tableau est accepte.
     """
     if not texte:
         return None
 
+    def normaliser(valeur: Any) -> dict[str, Any] | None:
+        if isinstance(valeur, dict):
+            return valeur
+        # Certains modeles encapsulent leur reponse dans un tableau d'un element.
+        if isinstance(valeur, list) and len(valeur) == 1 and isinstance(valeur[0], dict):
+            return valeur[0]
+        return None
+
     try:
-        valeur = json.loads(texte)
-        return valeur if isinstance(valeur, dict) else None
+        return normaliser(json.loads(texte))
     except json.JSONDecodeError:
         pass
 
-    bloc = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", texte, re.DOTALL)
+    bloc = re.search(r"```(?:json)?\s*([\{\[].*?[\}\]])\s*```", texte, re.DOTALL)
     if bloc:
         try:
-            return json.loads(bloc.group(1))
+            return normaliser(json.loads(bloc.group(1)))
         except json.JSONDecodeError:
             pass
 
     debut = texte.find("{")
     if debut == -1:
         return None
+
     profondeur = 0
+    dans_chaine = False
     for i in range(debut, len(texte)):
-        if texte[i] == "{":
-            profondeur += 1
-        elif texte[i] == "}":
-            profondeur -= 1
-            if profondeur == 0:
-                try:
-                    return json.loads(texte[debut : i + 1])
-                except json.JSONDecodeError:
-                    return None
-    return None
+        c = texte[i]
+        if c == '"' and texte[i - 1] != "\\":
+            dans_chaine = not dans_chaine
+        elif not dans_chaine:
+            if c == "{":
+                profondeur += 1
+            elif c == "}":
+                profondeur -= 1
+                if profondeur == 0:
+                    try:
+                        return normaliser(json.loads(texte[debut : i + 1]))
+                    except json.JSONDecodeError:
+                        break
+
+    # Objet jamais referme : le modele a ete interrompu.
+    try:
+        return normaliser(json.loads(reparer_json_tronque(texte[debut:])))
+    except json.JSONDecodeError:
+        return None
 
 
 _client: LLMClient | None = None
