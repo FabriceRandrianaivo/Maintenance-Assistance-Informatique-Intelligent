@@ -253,9 +253,17 @@ et une table SQLite interrogée par l'onglet Observabilité de l'interface.
 
 ### 4.5 Tests
 
-63 tests automatisés couvrent les contrats, le traçage, l'extraction JSON, la
-cohérence du jeu de données, la normalisation, le découpage, la recherche et le
-registre d'outils. Exécutés à chaque poussée et chaque *pull request*.
+68 tests automatisés couvrent les contrats, le traçage, l'extraction JSON, la
+cohérence du jeu de données, la normalisation, le découpage, la recherche, le
+registre d'outils et l'exécution de l'interface. Exécutés à chaque poussée et
+chaque *pull request*.
+
+> **NB — L'interface est testée en exécution, pas seulement à la compilation.**
+> Une erreur de rendu ne se voit pas à l'analyse statique : elle survient quand
+> le composant reçoit ses données. Un graphe mal alimenté avait ainsi passé une
+> vérification manuelle — la page se chargeait, seul l'onglet concerné cassait.
+> Le harnais officiel de Streamlit exécute désormais l'application et soumet un
+> ticket réel à chaque exécution de la suite.
 
 ---
 
