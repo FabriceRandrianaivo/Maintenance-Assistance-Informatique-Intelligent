@@ -9,6 +9,15 @@ d'évaluation, mécanismes de sécurité, limites connues.
 
 ---
 
+## Démonstration en ligne
+
+**https://maintenance-assistance-informatique-intelligent.streamlit.app**
+
+Le prototype est déployé et accessible sans installation. Les quatre scénarios
+de la section 8 y sont pré-remplis.
+
+---
+
 ## NB préliminaires
 
 > **NB — Les ressources de la section 7 n'étaient pas jointes au sujet.**
