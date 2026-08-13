@@ -28,6 +28,46 @@ from maii.rag.index import index  # noqa: E402
 
 st.set_page_config(page_title="mAIntenance & Assistance", page_icon="🛠", layout="wide")
 
+
+def _pont_secrets() -> None:
+    """Reporte les secrets de l'hebergeur dans l'environnement.
+
+    En local, les cles proviennent du fichier `.env`. En ligne, elles sont
+    fournies par le gestionnaire de secrets de la plateforme. Le client de
+    modeles ne lit que l'environnement : on l'alimente ici, avant tout appel,
+    plutot que de disperser deux sources de configuration dans le code.
+    """
+    import os
+
+    for cle in ("GROQ_API_KEY", "GROQ_MODEL", "GEMINI_API_KEY", "GEMINI_MODEL"):
+        try:
+            valeur = st.secrets[cle]
+        except Exception:
+            # Aucun gestionnaire de secrets, ou cle absente : l'execution
+            # locale sur fichier .env reste le cas nominal.
+            continue
+        if valeur and not os.getenv(cle):
+            os.environ[cle] = str(valeur)
+
+
+_pont_secrets()
+
+
+@st.cache_resource(show_spinner="Preparation des artefacts au premier demarrage...")
+def _preparer():
+    """Construit index et classifieur si le deploiement ne les fournit pas.
+
+    Les artefacts derives ne sont pas versionnes. Sur un deploiement recent,
+    ils sont donc absents et doivent etre reconstruits une fois, au premier
+    demarrage. Le resultat est mis en cache pour la duree du processus.
+    """
+    from maii.bootstrap import preparer
+
+    return preparer()
+
+
+_etat = _preparer()
+
 EXEMPLES = {
     "— saisie libre —": "",
     "1. Incident courant": (
@@ -74,6 +114,17 @@ with st.sidebar:
     st.subheader("Corpus")
     for cle, valeur in resume_corpus().items():
         st.write(f"{cle} : **{valeur}**")
+
+    if _etat.erreurs:
+        st.divider()
+        for erreur in _etat.erreurs:
+            st.warning(erreur)
+
+    st.divider()
+    st.caption(
+        "Le prototype fonctionne sans cle d'API : il bascule alors sur les "
+        "regles et la recherche lexicale."
+    )
 
 
 onglets = st.tabs(
