@@ -1,0 +1,19 @@
+[project]
+name = "maii"
+version = "0.1.0"
+description = "mAIntenance & Assistance - assistant intelligent de support informatique"
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

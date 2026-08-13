@@ -1,0 +1,24 @@
+# Secrets - ne jamais commiter
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Donnees generees et index
+data/itsm.db
+data/index/*.npz
+data/index/*.pkl
+
+# Traces volumineuses (on commite un extrait, pas le flux complet)
+observability/traces_raw/
+
+# OS / editeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
