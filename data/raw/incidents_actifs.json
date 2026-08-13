@@ -1,0 +1,46 @@
+[
+  {
+    "incident_id": "INC-2026-041",
+    "titre": "Indisponibilite du serveur applicatif ERP",
+    "service_impacte": "Odoo ERP",
+    "perimetre": "Siege Antananarivo",
+    "severite": "critique",
+    "statut": "en_cours",
+    "debut": "2026-08-13T07:40:00",
+    "equipe": "infrastructure",
+    "description": "Le serveur hebergeant Odoo ERP ne repond plus depuis 07h40. Les utilisateurs du siege ne peuvent plus se connecter a l application. Investigation en cours cote infrastructure."
+  },
+  {
+    "incident_id": "INC-2026-042",
+    "titre": "Lenteur reseau sur le site de Tanjombato",
+    "service_impacte": "Reseau LAN",
+    "perimetre": "Site Tanjombato",
+    "severite": "majeure",
+    "statut": "en_cours",
+    "debut": "2026-08-13T09:15:00",
+    "equipe": "infrastructure",
+    "description": "Saturation du lien inter-sites constatee depuis 09h15. Temps de reponse degrades sur toutes les applications hebergees au siege."
+  },
+  {
+    "incident_id": "INC-2026-039",
+    "titre": "Campagne d hameconnage en cours",
+    "service_impacte": "Messagerie",
+    "perimetre": "Tous sites",
+    "severite": "majeure",
+    "statut": "en_cours",
+    "debut": "2026-08-12T16:00:00",
+    "equipe": "securite",
+    "description": "Vague de courriels frauduleux imitant la direction financiere et demandant une validation de virement. Ne pas cliquer sur les liens. Signaler tout courriel suspect au service securite."
+  },
+  {
+    "incident_id": "INC-2026-043",
+    "titre": "File d impression bloquee sur le serveur d impression",
+    "service_impacte": "Impression",
+    "perimetre": "Siege Antananarivo",
+    "severite": "mineure",
+    "statut": "en_cours",
+    "debut": "2026-08-13T08:50:00",
+    "equipe": "support_n1",
+    "description": "Le spouleur du serveur d impression accumule les travaux depuis 08h50. Les impressions partent avec un retard pouvant atteindre trente minutes."
+  }
+]

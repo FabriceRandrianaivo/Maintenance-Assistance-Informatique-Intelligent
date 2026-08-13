@@ -1,0 +1,7 @@
+service_id,equipe,libelle,sla_minutes
+SVC-N1,support_n1,"Support de proximite, niveau 1",240
+SVC-N2,support_n2,"Support applicatif, niveau 2",480
+SVC-INFRA,infrastructure,"Reseau, serveurs et telephonie",120
+SVC-SEC,securite,Securite des systemes d information,60
+SVC-APP,applications,Editeurs et applications metier,480
+SVC-LOG,logistique_it,Parc materiel et consommables,960

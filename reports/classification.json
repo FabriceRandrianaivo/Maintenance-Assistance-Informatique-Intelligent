@@ -1,0 +1,47 @@
+{
+  "horodatage": "2026-08-13T12:42:06",
+  "apprentissage": 315,
+  "test": 105,
+  "echantillon_llm": 60,
+  "voies": [
+    {
+      "voie": "A - regles seules",
+      "macro_f1": 0.6577,
+      "f1_pondere": 0.6824,
+      "exactitude": 0.6476,
+      "effectif": 105
+    },
+    {
+      "voie": "B - modele supervise",
+      "macro_f1": 0.8569,
+      "f1_pondere": 0.866,
+      "exactitude": 0.8667,
+      "effectif": 105
+    },
+    {
+      "voie": "C - modele de langage",
+      "macro_f1": 0.6923,
+      "f1_pondere": 0.7061,
+      "exactitude": 0.6333,
+      "effectif": 60
+    },
+    {
+      "voie": "A+B+C - arbitrage",
+      "macro_f1": 0.8031,
+      "f1_pondere": 0.8555,
+      "exactitude": 0.8167,
+      "effectif": 60
+    }
+  ],
+  "plafond_etiquetage": 0.9429,
+  "repartition_test": {
+    "imprimantes_peripheriques": 16,
+    "comptes_authentification": 23,
+    "reseau_connectivite": 17,
+    "materiel_informatique": 13,
+    "cybersecurite": 9,
+    "droits_acces": 5,
+    "autre_indetermine": 5,
+    "logiciels_applications": 17
+  }
+}

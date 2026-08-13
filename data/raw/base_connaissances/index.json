@@ -1,0 +1,346 @@
+[
+  {
+    "doc_id": "KB-CPT-01",
+    "titre": "Reinitialiser un mot de passe utilisateur",
+    "categorie": "comptes_authentification",
+    "type": "procedure",
+    "mots_cles": [
+      "mot de passe",
+      "oublie",
+      "reinitialisation",
+      "connexion"
+    ]
+  },
+  {
+    "doc_id": "KB-CPT-02",
+    "titre": "Deverrouiller un compte apres echecs de connexion",
+    "categorie": "comptes_authentification",
+    "type": "procedure",
+    "mots_cles": [
+      "compte verrouille",
+      "bloque",
+      "tentatives",
+      "echec connexion"
+    ]
+  },
+  {
+    "doc_id": "KB-CPT-03",
+    "titre": "Probleme d authentification a double facteur",
+    "categorie": "comptes_authentification",
+    "type": "procedure",
+    "mots_cles": [
+      "double facteur",
+      "2FA",
+      "code",
+      "authentificateur",
+      "telephone"
+    ]
+  },
+  {
+    "doc_id": "KB-NET-01",
+    "titre": "Poste sans connexion reseau filaire",
+    "categorie": "reseau_connectivite",
+    "type": "procedure",
+    "mots_cles": [
+      "pas de connexion",
+      "cable",
+      "ethernet",
+      "reseau",
+      "deconnecte"
+    ]
+  },
+  {
+    "doc_id": "KB-NET-02",
+    "titre": "Lenteur reseau et temps de reponse degrades",
+    "categorie": "reseau_connectivite",
+    "type": "procedure",
+    "mots_cles": [
+      "lenteur",
+      "lent",
+      "ralenti",
+      "debit",
+      "temps de reponse"
+    ]
+  },
+  {
+    "doc_id": "KB-NET-03",
+    "titre": "Connexion sans fil impossible ou instable",
+    "categorie": "reseau_connectivite",
+    "type": "procedure",
+    "mots_cles": [
+      "wifi",
+      "sans fil",
+      "coupure",
+      "instable",
+      "deconnexion"
+    ]
+  },
+  {
+    "doc_id": "KB-NET-04",
+    "titre": "Acces impossible a une application hebergee",
+    "categorie": "reseau_connectivite",
+    "type": "procedure",
+    "mots_cles": [
+      "application inaccessible",
+      "serveur",
+      "indisponible",
+      "erreur"
+    ]
+  },
+  {
+    "doc_id": "KB-MAT-01",
+    "titre": "Poste qui ne demarre pas",
+    "categorie": "materiel_informatique",
+    "type": "procedure",
+    "mots_cles": [
+      "ne demarre pas",
+      "ecran noir",
+      "ne s allume plus",
+      "panne"
+    ]
+  },
+  {
+    "doc_id": "KB-MAT-02",
+    "titre": "Lenteur ou surchauffe d un poste de travail",
+    "categorie": "materiel_informatique",
+    "type": "procedure",
+    "mots_cles": [
+      "lent",
+      "rame",
+      "chauffe",
+      "ventilateur",
+      "bruyant",
+      "fige"
+    ]
+  },
+  {
+    "doc_id": "KB-MAT-03",
+    "titre": "Peripherique non reconnu",
+    "categorie": "materiel_informatique",
+    "type": "procedure",
+    "mots_cles": [
+      "clavier",
+      "souris",
+      "ecran",
+      "casque",
+      "non reconnu",
+      "usb"
+    ]
+  },
+  {
+    "doc_id": "KB-LOG-01",
+    "titre": "Application qui ne demarre plus",
+    "categorie": "logiciels_applications",
+    "type": "procedure",
+    "mots_cles": [
+      "ne demarre plus",
+      "plante",
+      "se ferme",
+      "erreur au lancement"
+    ]
+  },
+  {
+    "doc_id": "KB-LOG-02",
+    "titre": "Messagerie : impossible d envoyer ou de recevoir",
+    "categorie": "logiciels_applications",
+    "type": "procedure",
+    "mots_cles": [
+      "outlook",
+      "courriel",
+      "mail",
+      "envoi",
+      "reception",
+      "boite"
+    ]
+  },
+  {
+    "doc_id": "KB-LOG-03",
+    "titre": "Fichier corrompu ou document impossible a ouvrir",
+    "categorie": "logiciels_applications",
+    "type": "procedure",
+    "mots_cles": [
+      "fichier",
+      "corrompu",
+      "ouvrir",
+      "document",
+      "illisible"
+    ]
+  },
+  {
+    "doc_id": "KB-LOG-04",
+    "titre": "Erreur de connexion a l ERP",
+    "categorie": "logiciels_applications",
+    "type": "procedure",
+    "mots_cles": [
+      "erp",
+      "odoo",
+      "sage",
+      "connexion refusee",
+      "licence"
+    ]
+  },
+  {
+    "doc_id": "KB-IMP-01",
+    "titre": "Impression impossible depuis un poste",
+    "categorie": "imprimantes_peripheriques",
+    "type": "procedure",
+    "mots_cles": [
+      "imprimer",
+      "impression",
+      "ne sort pas",
+      "imprimante"
+    ]
+  },
+  {
+    "doc_id": "KB-IMP-02",
+    "titre": "Bourrage papier et defauts de qualite d impression",
+    "categorie": "imprimantes_peripheriques",
+    "type": "procedure",
+    "mots_cles": [
+      "bourrage",
+      "papier",
+      "coince",
+      "traces",
+      "pales",
+      "qualite"
+    ]
+  },
+  {
+    "doc_id": "KB-IMP-03",
+    "titre": "Numerisation impossible vers la messagerie",
+    "categorie": "imprimantes_peripheriques",
+    "type": "procedure",
+    "mots_cles": [
+      "scanner",
+      "numeriser",
+      "scan",
+      "copieur",
+      "envoi"
+    ]
+  },
+  {
+    "doc_id": "KB-ACC-01",
+    "titre": "Demande d acces a un dossier partage",
+    "categorie": "droits_acces",
+    "type": "procedure",
+    "mots_cles": [
+      "acces",
+      "partage",
+      "dossier",
+      "lecture",
+      "ecriture",
+      "refuse"
+    ]
+  },
+  {
+    "doc_id": "KB-ACC-02",
+    "titre": "Attribution d un acces applicatif",
+    "categorie": "droits_acces",
+    "type": "procedure",
+    "mots_cles": [
+      "acces application",
+      "profil",
+      "habilitation",
+      "role"
+    ]
+  },
+  {
+    "doc_id": "KB-ACC-03",
+    "titre": "Retrait des acces lors d un depart",
+    "categorie": "droits_acces",
+    "type": "procedure",
+    "mots_cles": [
+      "depart",
+      "desactivation",
+      "suppression compte",
+      "sortie"
+    ]
+  },
+  {
+    "doc_id": "KB-SEC-01",
+    "titre": "Courriel suspect ou tentative d hameconnage",
+    "categorie": "cybersecurite",
+    "type": "regle_securite",
+    "mots_cles": [
+      "phishing",
+      "hameconnage",
+      "courriel suspect",
+      "lien",
+      "fraude"
+    ]
+  },
+  {
+    "doc_id": "KB-SEC-02",
+    "titre": "Poste suspecte de compromission",
+    "categorie": "cybersecurite",
+    "type": "procedure_escalade",
+    "mots_cles": [
+      "compromis",
+      "virus",
+      "rancongiciel",
+      "infecte",
+      "malware"
+    ]
+  },
+  {
+    "doc_id": "KB-SEC-03",
+    "titre": "Verification d identite avant une operation sensible",
+    "categorie": "cybersecurite",
+    "type": "regle_securite",
+    "mots_cles": [
+      "identite",
+      "verification",
+      "usurpation",
+      "ingenierie sociale"
+    ]
+  },
+  {
+    "doc_id": "KB-SEC-04",
+    "titre": "Traitement des donnees personnelles dans les tickets",
+    "categorie": "cybersecurite",
+    "type": "regle_securite",
+    "mots_cles": [
+      "donnees personnelles",
+      "confidentialite",
+      "rgpd",
+      "vie privee"
+    ]
+  },
+  {
+    "doc_id": "KB-ESC-01",
+    "titre": "Regles de priorite et delais de traitement",
+    "categorie": "autre_indetermine",
+    "type": "procedure_escalade",
+    "mots_cles": [
+      "priorite",
+      "sla",
+      "delai",
+      "urgence",
+      "criticite"
+    ]
+  },
+  {
+    "doc_id": "KB-ESC-02",
+    "titre": "Criteres d escalade vers un technicien",
+    "categorie": "autre_indetermine",
+    "type": "procedure_escalade",
+    "mots_cles": [
+      "escalade",
+      "technicien",
+      "transfert",
+      "niveau 2"
+    ]
+  },
+  {
+    "doc_id": "KB-ESC-03",
+    "titre": "Informations a collecter avant tout diagnostic",
+    "categorie": "autre_indetermine",
+    "type": "fiche_technique",
+    "mots_cles": [
+      "informations",
+      "questions",
+      "diagnostic",
+      "collecte"
+    ]
+  }
+]
