@@ -470,7 +470,7 @@ git branch -M main
 - **Commits fréquents et lisibles** : l'historique fait partie de l'évaluation implicite de la qualité du prototype. Un unique commit « projet final » à 16h25 est un signal désastreux.
 - **CI** (`.github/workflows/ci.yml`) : `ruff check` + `pytest` sur chaque push. Un badge vert dans le README coûte 15 minutes et se voit immédiatement.
 
-- **Pas de `Co-Authored-By`** ni d'en-tête généré automatiquement : chaque commit est signé par son auteur réel, via `git config user.name` propre à chaque poste.
+- **Un auteur par commit** : chaque poste configure son propre `git config user.name` et `user.email` avant le premier commit.
 
 ---
 
