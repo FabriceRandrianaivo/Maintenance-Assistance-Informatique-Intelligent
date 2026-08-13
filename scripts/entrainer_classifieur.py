@@ -27,6 +27,7 @@ from sklearn.model_selection import train_test_split  # noqa: E402
 
 import maii  # noqa: F401,E402
 from maii.classify import arbitrage, llm as voie_llm, regles as voie_regles  # noqa: E402
+from maii.llm.provider import client  # noqa: E402
 from maii.classify.ml import ClassifieurAppris  # noqa: E402
 from maii.ingest.chargement import charger_tickets  # noqa: E402
 
@@ -106,20 +107,36 @@ def main() -> int:
     print("-" * 78)
 
     voie_llm.selecteur().preparer(apprentissage)
-    predits_llm, indisponibles = [], 0
-    for t in textes_e:
-        r = voie_llm.classer(t)
-        if r.disponible and r.categorie:
-            predits_llm.append(r.categorie.value)
-        else:
-            predits_llm.append("autre_indetermine")
-            indisponibles += 1
-    if indisponibles:
-        print(f"  ({indisponibles} appels non exploitables sur {len(textes_e)})")
-    resultats.append(mesurer(vrais_e, predits_llm, "C - modele de langage"))
 
-    predits_fusion = [arbitrage.classer(t).categorie.value for t in textes_e]
-    resultats.append(mesurer(vrais_e, predits_fusion, "A+B+C - arbitrage"))
+    if not client().disponible:
+        # Sans provider, chaque appel echouerait et la voie serait creditee d'un
+        # score proche de zero. Publier ce chiffre laisserait croire a un modele
+        # defaillant alors qu'il est simplement absent : on ne mesure pas ce
+        # qu'on n'a pas execute.
+        print("  C - modele de langage        NON MESUREE — aucun provider configure")
+        print("      Le systeme fonctionne en mode regles seules. Les voies A et B")
+        print("      ci-dessus, ainsi que les quatre scenarios, restent valides.")
+        resultats.append({
+            "voie": "C - modele de langage", "macro_f1": None,
+            "motif": "aucun provider configure", "effectif": 0,
+        })
+        predits_fusion = [arbitrage.classer(t).categorie.value for t in textes_e]
+        resultats.append(mesurer(vrais_e, predits_fusion, "A+B - arbitrage degrade"))
+    else:
+        predits_llm, indisponibles = [], 0
+        for t in textes_e:
+            r = voie_llm.classer(t)
+            if r.disponible and r.categorie:
+                predits_llm.append(r.categorie.value)
+            else:
+                predits_llm.append("autre_indetermine")
+                indisponibles += 1
+        if indisponibles:
+            print(f"  ({indisponibles} appels non exploitables sur {len(textes_e)})")
+        resultats.append(mesurer(vrais_e, predits_llm, "C - modele de langage"))
+
+        predits_fusion = [arbitrage.classer(t).categorie.value for t in textes_e]
+        resultats.append(mesurer(vrais_e, predits_fusion, "A+B+C - arbitrage"))
 
     # Reference : les memes voies mesurees sur le seul echantillon, pour que la
     # comparaison avec l'arbitrage porte sur des effectifs identiques.
