@@ -1,0 +1,61 @@
+utilisateur_id,identifiant,nom_complet,courriel,direction,site,telephone,vip,statut
+USR-0001,haja.randriamampionona,Haja Randriamampionona,haja.randriamampionona@organisation.mg,Direction generale,Site Tanjombato,+261 34 17 562 93,True,actif
+USR-0002,fanja.randrianaivo,Fanja Randrianaivo,fanja.randrianaivo@organisation.mg,Juridique,Siege Antananarivo,+261 34 31 750 89,False,actif
+USR-0003,voahangy.rakotondrasoa,Voahangy Rakotondrasoa,voahangy.rakotondrasoa@organisation.mg,Comptabilite et finances,Site Tanjombato,+261 34 28 946 50,False,actif
+USR-0004,onja.rasoanaivo,Onja Rasoanaivo,onja.rasoanaivo@organisation.mg,Production,Agence Toamasina,+261 34 95 769 77,False,actif
+USR-0005,naina.ratsimbazafy,Naina Ratsimbazafy,naina.ratsimbazafy@organisation.mg,Direction generale,Agence Mahajanga,+261 34 64 670 48,True,actif
+USR-0006,mamy.andrianjafy,Mamy Andrianjafy,mamy.andrianjafy@organisation.mg,Ressources humaines,Agence Mahajanga,+261 34 93 587 49,False,actif
+USR-0007,nirina.randriamampionona,Nirina Randriamampionona,nirina.randriamampionona@organisation.mg,Comptabilite et finances,Agence Mahajanga,+261 34 53 332 91,False,actif
+USR-0008,faniry.raharimalala,Faniry Raharimalala,faniry.raharimalala@organisation.mg,Commercial,Agence Mahajanga,+261 34 63 450 56,False,actif
+USR-0009,fanja.rabemananjara,Fanja Rabemananjara,fanja.rabemananjara@organisation.mg,Ressources humaines,Siege Antananarivo,+261 34 78 858 43,False,actif
+USR-0010,lalaina.ratsimbazafy,Lalaina Ratsimbazafy,lalaina.ratsimbazafy@organisation.mg,Ressources humaines,Agence Toamasina,+261 34 85 918 92,False,actif
+USR-0011,zo.rabemananjara,Zo Rabemananjara,zo.rabemananjara@organisation.mg,Logistique,Agence Mahajanga,+261 34 36 214 19,False,actif
+USR-0012,aina.razafindrakoto,Aina Razafindrakoto,aina.razafindrakoto@organisation.mg,Juridique,Siege Antananarivo,+261 34 62 598 22,False,actif
+USR-0013,toky.razafindrakoto,Toky Razafindrakoto,toky.razafindrakoto@organisation.mg,Juridique,Siege Antananarivo,+261 34 38 365 74,False,actif
+USR-0014,tiana.rasoanaivo,Tiana Rasoanaivo,tiana.rasoanaivo@organisation.mg,Commercial,Siege Antananarivo,+261 34 32 733 31,False,actif
+USR-0015,fanja.randrianaivo2,Fanja Randrianaivo,fanja.randrianaivo2@organisation.mg,Logistique,Agence Mahajanga,+261 34 67 931 51,False,actif
+USR-0016,faniry.ravelojaona,Faniry Ravelojaona,faniry.ravelojaona@organisation.mg,Ressources humaines,Site Tanjombato,+261 34 62 369 41,False,actif
+USR-0017,aina.rakotoarisoa,Aina Rakotoarisoa,aina.rakotoarisoa@organisation.mg,Direction generale,Agence Toamasina,+261 34 58 818 51,True,actif
+USR-0018,andry.andrianjafy,Andry Andrianjafy,andry.andrianjafy@organisation.mg,Production,Siege Antananarivo,+261 34 92 285 70,False,actif
+USR-0019,nirina.raharimalala,Nirina Raharimalala,nirina.raharimalala@organisation.mg,Direction generale,Agence Mahajanga,+261 34 51 850 11,True,actif
+USR-0020,mamy.randrianaivo,Mamy Randrianaivo,mamy.randrianaivo@organisation.mg,Commercial,Agence Mahajanga,+261 34 25 249 90,False,actif
+USR-0021,fenitra.randriamampionona,Fenitra Randriamampionona,fenitra.randriamampionona@organisation.mg,Systeme d information,Siege Antananarivo,+261 34 10 704 66,False,actif
+USR-0022,tiana.rasoanaivo2,Tiana Rasoanaivo,tiana.rasoanaivo2@organisation.mg,Systeme d information,Siege Antananarivo,+261 34 27 665 42,False,actif
+USR-0023,miora.randrianaivo,Miora Randrianaivo,miora.randrianaivo@organisation.mg,Direction generale,Site Tanjombato,+261 34 66 531 12,True,actif
+USR-0024,andry.andriamanana,Andry Andriamanana,andry.andriamanana@organisation.mg,Systeme d information,Site Tanjombato,+261 34 67 487 98,False,actif
+USR-0025,tiana.rabemananjara,Tiana Rabemananjara,tiana.rabemananjara@organisation.mg,Juridique,Siege Antananarivo,+261 34 47 518 76,False,actif
+USR-0026,mamy.randrianaivo2,Mamy Randrianaivo,mamy.randrianaivo2@organisation.mg,Commercial,Site Tanjombato,+261 34 36 372 53,False,inactif
+USR-0027,tojo.ravelojaona,Tojo Ravelojaona,tojo.ravelojaona@organisation.mg,Ressources humaines,Agence Toamasina,+261 34 65 702 14,False,actif
+USR-0028,rivo.razafindrakoto,Rivo Razafindrakoto,rivo.razafindrakoto@organisation.mg,Commercial,Site Tanjombato,+261 34 84 553 58,False,actif
+USR-0029,rado.raharimalala,Rado Raharimalala,rado.raharimalala@organisation.mg,Juridique,Site Tanjombato,+261 34 28 615 40,False,actif
+USR-0030,zo.rabemananjara2,Zo Rabemananjara,zo.rabemananjara2@organisation.mg,Systeme d information,Agence Toamasina,+261 34 74 998 47,False,inactif
+USR-0031,rado.rabemananjara,Rado Rabemananjara,rado.rabemananjara@organisation.mg,Production,Agence Mahajanga,+261 34 13 243 11,False,actif
+USR-0032,voahangy.andrianjafy,Voahangy Andrianjafy,voahangy.andrianjafy@organisation.mg,Systeme d information,Siege Antananarivo,+261 34 89 596 50,False,actif
+USR-0033,andry.razafindrakoto,Andry Razafindrakoto,andry.razafindrakoto@organisation.mg,Logistique,Siege Antananarivo,+261 34 36 335 45,False,actif
+USR-0034,mamy.ravelojaona,Mamy Ravelojaona,mamy.ravelojaona@organisation.mg,Logistique,Agence Toamasina,+261 34 61 100 12,False,actif
+USR-0035,onja.andrianjafy,Onja Andrianjafy,onja.andrianjafy@organisation.mg,Direction generale,Siege Antananarivo,+261 34 55 452 93,True,actif
+USR-0036,setra.rakotoarisoa,Setra Rakotoarisoa,setra.rakotoarisoa@organisation.mg,Commercial,Site Tanjombato,+261 34 10 396 56,False,actif
+USR-0037,miora.randriamampionona,Miora Randriamampionona,miora.randriamampionona@organisation.mg,Ressources humaines,Siege Antananarivo,+261 34 68 371 18,True,actif
+USR-0038,rivo.andrianjafy,Rivo Andrianjafy,rivo.andrianjafy@organisation.mg,Juridique,Site Tanjombato,+261 34 51 852 23,False,actif
+USR-0039,toky.ravelojaona,Toky Ravelojaona,toky.ravelojaona@organisation.mg,Production,Site Tanjombato,+261 34 31 757 66,True,actif
+USR-0040,onja.rabemananjara,Onja Rabemananjara,onja.rabemananjara@organisation.mg,Ressources humaines,Agence Mahajanga,+261 34 16 929 93,False,actif
+USR-0041,hery.rabemananjara,Hery Rabemananjara,hery.rabemananjara@organisation.mg,Commercial,Agence Toamasina,+261 34 97 473 18,False,actif
+USR-0042,fanja.andrianjafy,Fanja Andrianjafy,fanja.andrianjafy@organisation.mg,Logistique,Agence Mahajanga,+261 34 67 363 37,False,actif
+USR-0043,onja.andrianjafy2,Onja Andrianjafy,onja.andrianjafy2@organisation.mg,Logistique,Siege Antananarivo,+261 34 69 899 68,False,actif
+USR-0044,nirina.randrianaivo,Nirina Randrianaivo,nirina.randrianaivo@organisation.mg,Ressources humaines,Agence Mahajanga,+261 34 51 379 87,False,actif
+USR-0045,harena.raharimalala,Harena Raharimalala,harena.raharimalala@organisation.mg,Systeme d information,Agence Toamasina,+261 34 20 342 41,False,actif
+USR-0046,tiana.andriamanana,Tiana Andriamanana,tiana.andriamanana@organisation.mg,Commercial,Site Tanjombato,+261 34 95 492 42,False,actif
+USR-0047,rado.andrianjafy,Rado Andrianjafy,rado.andrianjafy@organisation.mg,Systeme d information,Agence Toamasina,+261 34 93 983 96,True,actif
+USR-0048,onja.rabemananjara2,Onja Rabemananjara,onja.rabemananjara2@organisation.mg,Logistique,Agence Mahajanga,+261 34 76 602 23,False,actif
+USR-0049,fenitra.randriamampionona2,Fenitra Randriamampionona,fenitra.randriamampionona2@organisation.mg,Ressources humaines,Agence Toamasina,+261 34 80 524 78,False,actif
+USR-0050,voahangy.raharimalala,Voahangy Raharimalala,voahangy.raharimalala@organisation.mg,Production,Agence Mahajanga,+261 34 88 290 54,False,actif
+USR-0051,hery.ravelojaona,Hery Ravelojaona,hery.ravelojaona@organisation.mg,Direction generale,Agence Toamasina,+261 34 53 421 88,True,inactif
+USR-0052,nirina.andrianjafy,Nirina Andrianjafy,nirina.andrianjafy@organisation.mg,Commercial,Siege Antananarivo,+261 34 69 529 39,False,actif
+USR-0053,mialy.rabemananjara,Mialy Rabemananjara,mialy.rabemananjara@organisation.mg,Commercial,Agence Mahajanga,+261 34 27 459 77,False,actif
+USR-0054,voahangy.ravelojaona,Voahangy Ravelojaona,voahangy.ravelojaona@organisation.mg,Direction generale,Siege Antananarivo,+261 34 24 886 75,True,actif
+USR-0055,toky.rakotoarisoa,Toky Rakotoarisoa,toky.rakotoarisoa@organisation.mg,Logistique,Siege Antananarivo,+261 34 76 853 63,False,actif
+USR-0056,setra.rakotoarisoa2,Setra Rakotoarisoa,setra.rakotoarisoa2@organisation.mg,Logistique,Agence Mahajanga,+261 34 31 510 95,False,actif
+USR-0057,sitraka.razafindrakoto,Sitraka Razafindrakoto,sitraka.razafindrakoto@organisation.mg,Commercial,Siege Antananarivo,+261 34 58 325 50,False,actif
+USR-0058,andry.andriamanana2,Andry Andriamanana,andry.andriamanana2@organisation.mg,Direction generale,Siege Antananarivo,+261 34 28 447 26,True,actif
+USR-0059,fanja.rakotondrasoa,Fanja Rakotondrasoa,fanja.rakotondrasoa@organisation.mg,Commercial,Site Tanjombato,+261 34 25 948 25,False,actif
+USR-0060,harena.rakotoarisoa,Harena Rakotoarisoa,harena.rakotoarisoa@organisation.mg,Comptabilite et finances,Site Tanjombato,+261 34 24 116 81,False,actif
