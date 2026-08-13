@@ -458,7 +458,22 @@ git remote add origin https://github.com/FabriceRandrianaivo/Maintenance-Assista
 git branch -M main
 ```
 
-- **Branches** : `main` (toujours fonctionnel) + branches courtes `feat/rag-hybrid`, `feat/agent-tools`, `fix/...`. Durée de vie < 2 h le jour J, fusion fréquente.
+- **Modèle de branches** :
+
+  | Branche | Rôle | Qui y écrit |
+  |---|---|---|
+  | `main` | **stable** — ne reçoit que des versions démontrables, uniquement par *pull request* | personne en direct |
+  | `develop` | **intégration** — branche de travail commune, doit rester fonctionnelle | tous |
+  | `feat/*`, `fix/*` | chantiers individuels, durée de vie < 2 h | leur auteur |
+
+  ```
+  feat/rag-hybride ─┐
+  feat/agent-outils ─┼─→ develop ──(PR)──→ main
+  feat/securite ────┘
+  ```
+
+- **Rythme des PR vers `main`** : à chaque palier démontrable, pas en continu. Trois paliers prévus le jour J — pipeline bout en bout, système complet, version finale. La PR sert de point de contrôle : on ne fusionne que si les quatre scénarios passent.
+- **Vers `develop`** : poussée directe autorisée pour les membres de l'équipe. À trois personnes sur cinq heures, exiger une revue sur chaque commit interne coûterait plus que ce que cela protège.
 - **Zéro conflit par construction** : la propriété des fichiers (tableau §9) fait que deux personnes ne touchent jamais le même module. Les fichiers partagés (`models/`, `config/`) sont modifiés uniquement par R1, sur demande.
 - **Commits** : Conventional Commits, en français, à l'impératif.
   ```
@@ -468,7 +483,8 @@ git branch -M main
   docs(rapport): section stratégie d'évaluation
   ```
 - **Commits fréquents et lisibles** : l'historique fait partie de l'évaluation implicite de la qualité du prototype. Un unique commit « projet final » à 16h25 est un signal désastreux.
-- **CI** (`.github/workflows/ci.yml`) : `ruff check` + `pytest` sur chaque push. Un badge vert dans le README coûte 15 minutes et se voit immédiatement.
+- **CI** (`.github/workflows/ci.yml`) : `pytest` sur chaque poussée et chaque PR visant `main` ou `develop`. Un badge vert dans le README coûte quinze minutes et se voit immédiatement.
+- **Gabarit de PR** (`.github/pull_request_template.md`) : rappelle l'axe de notation concerné et les points de contrôle du sujet (contrats respectés, span émis, validation humaine préservée).
 
 - **Un auteur par commit** : chaque poste configure son propre `git config user.name` et `user.email` avant le premier commit.
 
