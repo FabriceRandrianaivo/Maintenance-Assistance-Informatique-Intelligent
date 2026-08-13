@@ -7,7 +7,7 @@
       "categorie": "imprimantes_peripheriques",
       "priorite": "moyenne",
       "equipe": "support_n1",
-      "confiance": 0.7585,
+      "confiance": 0.7593,
       "informations_manquantes": [],
       "action": "resolution",
       "sources": [
@@ -16,7 +16,7 @@
         "KB-IMP-02"
       ],
       "validation_humaine_requise": false,
-      "resume_probleme": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-003 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
+      "resume_probleme": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
       "diagnostic": "Incident rattache a la categorie « imprimantes_peripheriques ». Procedure applicable : Impression impossible depuis un poste — Escalade.",
       "etapes_resolution": [
         {
@@ -50,13 +50,120 @@
           "source": "KB-IMP-01#c2"
         }
       ],
-      "outils_utilises": [],
+      "outils_utilises": [
+        {
+          "nom": "consulter_equipement",
+          "parametres": {
+            "equipement_id": "IMP-002"
+          },
+          "resultat": {
+            "equipement_id": "IMP-002",
+            "type": "imprimante",
+            "modele": "Epson WorkForce WF-3820",
+            "utilisateur_id": "",
+            "site": "Siege Antananarivo",
+            "date_mise_en_service": "2021-05-10",
+            "garantie_active": true,
+            "criticite": "moyenne"
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "verifier la fiche d'inventaire du materiel",
+          "sensible": false
+        },
+        {
+          "nom": "rechercher_incidents_actifs",
+          "parametres": {
+            "perimetre": null
+          },
+          "resultat": [
+            {
+              "incident_id": "INC-2026-041",
+              "titre": "Indisponibilite du serveur applicatif ERP",
+              "severite": "critique",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-042",
+              "titre": "Lenteur reseau sur le site de Tanjombato",
+              "severite": "majeure",
+              "perimetre": "Site Tanjombato",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-039",
+              "titre": "Campagne d hameconnage en cours",
+              "severite": "majeure",
+              "perimetre": "Tous sites",
+              "equipe": "securite"
+            },
+            {
+              "incident_id": "INC-2026-043",
+              "titre": "File d impression bloquee sur le serveur d impression",
+              "severite": "mineure",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "support_n1"
+            }
+          ],
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "verifier l'existence d'un incident global rattachable",
+          "sensible": false
+        },
+        {
+          "nom": "creer_ticket",
+          "parametres": {
+            "description": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
+            "categorie": "imprimantes_peripheriques",
+            "priorite": "moyenne",
+            "equipe": "support_n1"
+          },
+          "resultat": {
+            "ticket_id": "TCK-F6952F",
+            "description": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
+            "categorie": "imprimantes_peripheriques",
+            "priorite": "moyenne",
+            "equipe": "support_n1",
+            "statut": "affecte",
+            "journal": []
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "enregistrer la demande, action retenue : resolution",
+          "sensible": false
+        },
+        {
+          "nom": "affecter_ticket",
+          "parametres": {
+            "ticket_id": "TCK-F6952F",
+            "equipe": "support_n1"
+          },
+          "resultat": {
+            "ticket_id": "TCK-F6952F",
+            "description": "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre mon poste PC-0012.",
+            "categorie": "imprimantes_peripheriques",
+            "priorite": "moyenne",
+            "equipe": "support_n1",
+            "statut": "affecte",
+            "journal": []
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "affecter le ticket a l'equipe de traitement",
+          "sensible": false
+        }
+      ],
       "entites_extraites": {
         "utilisateur": null,
-        "equipement": "IMP-003",
+        "equipement": "IMP-002",
         "application_service": null,
         "symptomes": [
-          "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-003 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre m…"
+          "Bonjour, je n arrive plus a imprimer sur l imprimante IMP-002 du deuxieme etage depuis ce matin. Les documents partent mais rien ne sort. J ai deja redemarre m…"
         ],
         "moment_apparition": "ce matin",
         "impact_activite": null,
@@ -80,10 +187,10 @@
     "conforme": true,
     "echecs": [],
     "decision": {
-      "categorie": "autre_indetermine",
+      "categorie": "reseau_connectivite",
       "priorite": "critique",
-      "equipe": "support_n2",
-      "confiance": 0.3878,
+      "equipe": "infrastructure",
+      "confiance": 0.513,
       "informations_manquantes": [
         "equipement"
       ],
@@ -93,7 +200,7 @@
         "KB-ESC-01",
         "KB-ACC-01"
       ],
-      "validation_humaine_requise": false,
+      "validation_humaine_requise": true,
       "resume_probleme": "Toute la direction Comptabilite et finances n a plus acces a Odoo ERP depuis 8h. Nous sommes en pleine cloture mensuelle, l activite est totalement arretee et l echeance est ce soir.",
       "diagnostic": "Ticket rattache a l'incident global INC-2026-041 — Indisponibilite du serveur applicatif ERP. Perimetre : Siege Antananarivo. Aucun diagnostic individuel n'est engage tant que l'incident est ouvert.",
       "etapes_resolution": [
@@ -118,7 +225,105 @@
           "source": "KB-LOG-04#c2"
         }
       ],
-      "outils_utilises": [],
+      "outils_utilises": [
+        {
+          "nom": "verifier_etat_service",
+          "parametres": {
+            "service": "odoo"
+          },
+          "resultat": {
+            "service": "Odoo ERP",
+            "etat": "degrade",
+            "incident_id": "INC-2026-041",
+            "severite": "critique",
+            "perimetre": "Siege Antananarivo",
+            "depuis": "2026-08-13T07:40:00"
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "distinguer une panne generale d'un probleme individuel",
+          "sensible": false
+        },
+        {
+          "nom": "rechercher_incidents_actifs",
+          "parametres": {
+            "perimetre": null
+          },
+          "resultat": [
+            {
+              "incident_id": "INC-2026-041",
+              "titre": "Indisponibilite du serveur applicatif ERP",
+              "severite": "critique",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-042",
+              "titre": "Lenteur reseau sur le site de Tanjombato",
+              "severite": "majeure",
+              "perimetre": "Site Tanjombato",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-039",
+              "titre": "Campagne d hameconnage en cours",
+              "severite": "majeure",
+              "perimetre": "Tous sites",
+              "equipe": "securite"
+            },
+            {
+              "incident_id": "INC-2026-043",
+              "titre": "File d impression bloquee sur le serveur d impression",
+              "severite": "mineure",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "support_n1"
+            }
+          ],
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "verifier l'existence d'un incident global rattachable",
+          "sensible": false
+        },
+        {
+          "nom": "creer_ticket",
+          "parametres": {
+            "description": "Toute la direction Comptabilite et finances n a plus acces a Odoo ERP depuis 8h. Nous sommes en pleine cloture mensuelle, l activite est totalement arretee et l echeance est ce soir.",
+            "categorie": "reseau_connectivite",
+            "priorite": "critique",
+            "equipe": "infrastructure"
+          },
+          "resultat": {
+            "ticket_id": "TCK-C9BF23",
+            "description": "Toute la direction Comptabilite et finances n a plus acces a Odoo ERP depuis 8h. Nous sommes en pleine cloture mensuelle, l activite est totalement arretee et l echeance est ce soir.",
+            "categorie": "reseau_connectivite",
+            "priorite": "critique",
+            "equipe": "infrastructure",
+            "statut": "ouvert",
+            "journal": []
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "enregistrer la demande, action retenue : escalade",
+          "sensible": false
+        },
+        {
+          "nom": "escalader_vers_technicien",
+          "parametres": {
+            "ticket_id": "TCK-C9BF23",
+            "equipe": "infrastructure",
+            "motif": "Ticket rattache a l'incident global INC-2026-041 — Indisponibilite du serveur applicatif ERP. Perimetre : Siege Antananarivo. Aucun diagnostic individuel n'est engage tant que l'incident est ouvert."
+          },
+          "resultat": null,
+          "statut": "en_attente_validation",
+          "erreur": "operation sensible : validation humaine requise",
+          "latence_ms": 0,
+          "justification": "transmettre le dossier a l'equipe competente",
+          "sensible": true
+        }
+      ],
       "entites_extraites": {
         "utilisateur": null,
         "equipement": null,
@@ -137,7 +342,7 @@
       "hors_distribution": false,
       "risque_escalade": 1.0,
       "probabilite_depassement_sla": 0.7,
-      "duree_estimee_resolution_min": 480,
+      "duree_estimee_resolution_min": 120,
       "motif_securite": null,
       "trace_id": "DEMO-002",
       "mode_execution": "groq:llama-3.3-70b-versatile"
@@ -163,7 +368,98 @@
       "resume_probleme": "ca marche pas",
       "diagnostic": "Aucune procedure suffisamment proche n'a ete trouvee dans la base de connaissances. Le dossier est transmis a un technicien plutot que de proposer une resolution non fondee.",
       "etapes_resolution": [],
-      "outils_utilises": [],
+      "outils_utilises": [
+        {
+          "nom": "rechercher_incidents_actifs",
+          "parametres": {
+            "perimetre": null
+          },
+          "resultat": [
+            {
+              "incident_id": "INC-2026-041",
+              "titre": "Indisponibilite du serveur applicatif ERP",
+              "severite": "critique",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-042",
+              "titre": "Lenteur reseau sur le site de Tanjombato",
+              "severite": "majeure",
+              "perimetre": "Site Tanjombato",
+              "equipe": "infrastructure"
+            },
+            {
+              "incident_id": "INC-2026-039",
+              "titre": "Campagne d hameconnage en cours",
+              "severite": "majeure",
+              "perimetre": "Tous sites",
+              "equipe": "securite"
+            },
+            {
+              "incident_id": "INC-2026-043",
+              "titre": "File d impression bloquee sur le serveur d impression",
+              "severite": "mineure",
+              "perimetre": "Siege Antananarivo",
+              "equipe": "support_n1"
+            }
+          ],
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "verifier l'existence d'un incident global rattachable",
+          "sensible": false
+        },
+        {
+          "nom": "creer_ticket",
+          "parametres": {
+            "description": "ca marche pas",
+            "categorie": "autre_indetermine",
+            "priorite": "basse",
+            "equipe": "support_n1"
+          },
+          "resultat": {
+            "ticket_id": "TCK-1C97A9",
+            "description": "ca marche pas",
+            "categorie": "autre_indetermine",
+            "priorite": "basse",
+            "equipe": "support_n1",
+            "statut": "en_attente_utilisateur",
+            "journal": [
+              "Informations complementaires demandees."
+            ]
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "enregistrer la demande, action retenue : demande_information",
+          "sensible": false
+        },
+        {
+          "nom": "mettre_a_jour_ticket",
+          "parametres": {
+            "ticket_id": "TCK-1C97A9",
+            "statut": "en_attente_utilisateur",
+            "commentaire": "Informations complementaires demandees."
+          },
+          "resultat": {
+            "ticket_id": "TCK-1C97A9",
+            "description": "ca marche pas",
+            "categorie": "autre_indetermine",
+            "priorite": "basse",
+            "equipe": "support_n1",
+            "statut": "en_attente_utilisateur",
+            "journal": [
+              "Informations complementaires demandees."
+            ]
+          },
+          "statut": "succes",
+          "erreur": null,
+          "latence_ms": 0,
+          "justification": "suspendre le traitement dans l'attente d'une reponse",
+          "sensible": false
+        }
+      ],
       "entites_extraites": {
         "utilisateur": null,
         "equipement": null,
